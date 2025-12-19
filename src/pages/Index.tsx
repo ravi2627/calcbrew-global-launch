@@ -19,8 +19,18 @@ const Index = () => {
           name="description"
           content="CalcBrew offers 30+ free online calculators for home, business, finance, and health. Accurate, fast, and mobile-friendly tools built for global users."
         />
-        <meta name="keywords" content="online calculator, free calculator, ROI calculator, mortgage calculator, BMI calculator, construction calculator" />
+        <meta name="keywords" content="online calculator, free calculator, ROI calculator, mortgage calculator, BMI calculator, construction calculator, payroll calculator" />
         <link rel="canonical" href="https://calcbrew.com/" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="CalcBrew - Brew the Right Numbers | Free Online Calculators" />
+        <meta property="og:description" content="Smart, accurate calculators for home, business, and everyday decisions — built for global users." />
+        <meta property="og:url" content="https://calcbrew.com/" />
+        <meta property="og:image" content="https://calcbrew.com/og-image.png" />
+        
+        {/* Twitter */}
+        <meta name="twitter:title" content="CalcBrew - Brew the Right Numbers" />
+        <meta name="twitter:description" content="30+ free, accurate calculators for home, business, finance, and health." />
       </Helmet>
 
       {/* NO ADS ABOVE THE FOLD - Hero is 100% content-focused */}
