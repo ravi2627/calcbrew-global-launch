@@ -8,6 +8,7 @@ import WhyCalcBrew from "@/components/home/WhyCalcBrew";
 import SEOContent from "@/components/home/SEOContent";
 import FAQSection from "@/components/home/FAQSection";
 import FinalCTA from "@/components/home/FinalCTA";
+import { AdSection } from "@/components/ads";
 
 const Index = () => {
   return (
@@ -22,14 +23,26 @@ const Index = () => {
         <link rel="canonical" href="https://calcbrew.com/" />
       </Helmet>
 
+      {/* NO ADS ABOVE THE FOLD - Hero is 100% content-focused */}
       <HeroSection />
       <TrustStrip />
       <CategoriesSection />
       <FeaturedCalculators />
       <WhyCalcBrew />
       <SEOContent />
+      
+      {/* AD ZONE 1: After SEO content block - Safe placement */}
+      <AdSection slot="home-after-seo" format="horizontal" />
+      
       <FAQSection />
+      
+      {/* AD ZONE 2: After FAQ section - Safe placement */}
+      <AdSection slot="home-after-faq" format="leaderboard" />
+      
       <FinalCTA />
+      
+      {/* AD ZONE 3: Before footer - Safe placement */}
+      <AdSection slot="home-before-footer" format="horizontal" className="border-t border-border" />
     </Layout>
   );
 };
