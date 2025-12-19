@@ -1,20 +1,20 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   CreditCard,
   Crown,
   Check,
   Sparkles,
   Shield,
-  Zap,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const DashboardBilling = () => {
-  const { isPro, setPlanType } = useAuth();
+  const { user, isPro, subscription, refreshProfile } = useAuth();
 
   const freeFeatures = [
     "Basic calculators",
@@ -33,8 +33,22 @@ const DashboardBilling = () => {
   ];
 
   // For demo purposes - toggle plan
-  const togglePlan = () => {
-    setPlanType(isPro ? 'free' : 'pro');
+  const togglePlan = async () => {
+    if (!user) return;
+    
+    const newPlan = isPro ? 'free' : 'pro';
+    const { error } = await supabase
+      .from('subscriptions')
+      .update({ plan: newPlan })
+      .eq('user_id', user.id);
+    
+    if (error) {
+      toast.error("Failed to update plan");
+      return;
+    }
+    
+    await refreshProfile();
+    toast.success(`Switched to ${newPlan === 'pro' ? 'Pro' : 'Free'} plan`);
   };
 
   return (

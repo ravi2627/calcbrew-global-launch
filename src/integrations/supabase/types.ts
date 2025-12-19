@@ -47,28 +47,34 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          country: string | null
           created_at: string
           email: string | null
           full_name: string | null
           id: string
+          language: string | null
           plan_type: string
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
+          country?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
           id: string
+          language?: string | null
           plan_type?: string
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
+          country?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
           id?: string
+          language?: string | null
           plan_type?: string
           updated_at?: string
         }
@@ -111,6 +117,74 @@ export type Database = {
           result?: Json
           share_id?: string | null
           title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      shared_calculations: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          saved_calculation_id: string
+          share_token: string
+          views: number
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          saved_calculation_id: string
+          share_token: string
+          views?: number
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          saved_calculation_id?: string
+          share_token?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_calculations_saved_calculation_id_fkey"
+            columns: ["saved_calculation_id"]
+            isOneToOne: false
+            referencedRelation: "saved_calculations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          id: string
+          plan: string
+          start_date: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          plan?: string
+          start_date?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          plan?: string
+          start_date?: string
+          status?: string
           updated_at?: string
           user_id?: string
         }

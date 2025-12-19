@@ -1,133 +1,175 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
-import type { User, Session, PlanType } from "@/types/database";
+import { supabase } from "@/integrations/supabase/client";
+import type { User, Session } from "@supabase/supabase-js";
+
+type PlanType = 'free' | 'pro';
+
+interface Profile {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+  plan_type: string;
+  language: string | null;
+  country: string | null;
+}
+
+interface Subscription {
+  id: string;
+  user_id: string;
+  plan: string;
+  status: string;
+  start_date: string;
+  end_date: string | null;
+}
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
+  profile: Profile | null;
+  subscription: Subscription | null;
   isLoading: boolean;
   isPro: boolean;
   planType: PlanType;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, fullName?: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signInWithGithub: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
-  setPlanType: (plan: PlanType) => void;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Storage keys
-const USER_KEY = "calcbrew_user";
-const SESSION_KEY = "calcbrew_session";
-const PLAN_KEY = "calcbrew_plan";
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [planType, setPlanTypeState] = useState<PlanType>('free');
 
+  const planType: PlanType = subscription?.plan === 'pro' ? 'pro' : 'free';
   const isPro = planType === 'pro';
 
-  // Initialize from localStorage (temporary until Supabase is connected)
+  const fetchProfile = useCallback(async (userId: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+    
+    if (!error && data) {
+      setProfile(data as Profile);
+    }
+  }, []);
+
+  const fetchSubscription = useCallback(async (userId: string) => {
+    const { data, error } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    if (!error && data) {
+      setSubscription(data as Subscription);
+    }
+  }, []);
+
+  const refreshProfile = useCallback(async () => {
+    if (user?.id) {
+      await Promise.all([
+        fetchProfile(user.id),
+        fetchSubscription(user.id)
+      ]);
+    }
+  }, [user?.id, fetchProfile, fetchSubscription]);
+
   useEffect(() => {
-    const storedUser = localStorage.getItem(USER_KEY);
-    const storedSession = localStorage.getItem(SESSION_KEY);
-    const storedPlan = localStorage.getItem(PLAN_KEY) as PlanType;
+    // Set up auth state listener FIRST
+    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Defer Supabase calls with setTimeout to prevent deadlock
+        if (session?.user) {
+          setTimeout(() => {
+            fetchProfile(session.user.id);
+            fetchSubscription(session.user.id);
+          }, 0);
+        } else {
+          setProfile(null);
+          setSubscription(null);
+        }
+      }
+    );
 
-    if (storedUser && storedSession) {
-      setUser(JSON.parse(storedUser));
-      setSession(JSON.parse(storedSession));
-    }
-    if (storedPlan) {
-      setPlanTypeState(storedPlan);
-    }
-    setIsLoading(false);
-  }, []);
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchProfile(session.user.id);
+        fetchSubscription(session.user.id);
+      }
+      
+      setIsLoading(false);
+    });
 
-  // Persist to localStorage
-  const persistAuth = useCallback((user: User | null, session: Session | null) => {
-    if (user && session) {
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
-      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    } else {
-      localStorage.removeItem(USER_KEY);
-      localStorage.removeItem(SESSION_KEY);
-    }
-  }, []);
+    return () => authSubscription.unsubscribe();
+  }, [fetchProfile, fetchSubscription]);
 
-  const setPlanType = useCallback((plan: PlanType) => {
-    setPlanTypeState(plan);
-    localStorage.setItem(PLAN_KEY, plan);
-  }, []);
-
-  // Mock sign in - Replace with Supabase auth.signInWithPassword
   const signIn = async (email: string, password: string): Promise<{ error: Error | null }> => {
-    try {
-      // TODO: Replace with supabase.auth.signInWithPassword({ email, password })
-      const mockUser: User = {
-        id: crypto.randomUUID(),
-        email,
-        user_metadata: { full_name: email.split('@')[0] }
-      };
-      const mockSession: Session = {
-        user: mockUser,
-        access_token: `mock_token_${Date.now()}`,
-        expires_at: Date.now() + 3600000
-      };
-      
-      setUser(mockUser);
-      setSession(mockSession);
-      persistAuth(mockUser, mockSession);
-      
-      return { error: null };
-    } catch (err) {
-      return { error: err as Error };
-    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { error };
   };
 
-  // Mock sign up - Replace with Supabase auth.signUp
-  const signUp = async (email: string, password: string): Promise<{ error: Error | null }> => {
-    try {
-      // TODO: Replace with supabase.auth.signUp({ email, password, options: { emailRedirectTo } })
-      const mockUser: User = {
-        id: crypto.randomUUID(),
-        email,
-        user_metadata: { full_name: email.split('@')[0] }
-      };
-      const mockSession: Session = {
-        user: mockUser,
-        access_token: `mock_token_${Date.now()}`,
-        expires_at: Date.now() + 3600000
-      };
-      
-      setUser(mockUser);
-      setSession(mockSession);
-      persistAuth(mockUser, mockSession);
-      
-      return { error: null };
-    } catch (err) {
-      return { error: err as Error };
-    }
+  const signUp = async (email: string, password: string, fullName?: string): Promise<{ error: Error | null }> => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName || email.split('@')[0],
+        }
+      }
+    });
+    return { error };
   };
 
-  // Mock OAuth - Replace with Supabase OAuth
   const signInWithGoogle = async (): Promise<{ error: Error | null }> => {
-    // TODO: Replace with supabase.auth.signInWithOAuth({ provider: 'google' })
-    return { error: new Error("Google OAuth requires Supabase integration. Enable Cloud to use this feature.") };
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      }
+    });
+    return { error };
   };
 
   const signInWithGithub = async (): Promise<{ error: Error | null }> => {
-    // TODO: Replace with supabase.auth.signInWithOAuth({ provider: 'github' })
-    return { error: new Error("GitHub OAuth requires Supabase integration. Enable Cloud to use this feature.") };
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      }
+    });
+    return { error };
   };
 
   const signOut = async () => {
-    // TODO: Replace with supabase.auth.signOut()
+    await supabase.auth.signOut();
     setUser(null);
     setSession(null);
-    persistAuth(null, null);
+    setProfile(null);
+    setSubscription(null);
   };
 
   return (
@@ -135,6 +177,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         user,
         session,
+        profile,
+        subscription,
         isLoading,
         isPro,
         planType,
@@ -143,7 +187,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         signInWithGoogle,
         signInWithGithub,
         signOut,
-        setPlanType,
+        refreshProfile,
       }}
     >
       {children}
