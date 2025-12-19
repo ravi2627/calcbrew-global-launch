@@ -66,6 +66,14 @@ import {
   BreakEvenCalculator,
 } from "./pages/calculators/business";
 
+// Health & Fitness Calculators
+import {
+  BMICalculator,
+  CalorieCalculator,
+  MacroCalculator,
+  BodyFatCalculator,
+} from "./pages/calculators/health-fitness";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -129,6 +137,12 @@ const App = () => (
               <Route path="/calculators/business/commission-calculator" element={<CommissionCalculator />} />
               <Route path="/calculators/business/roi-calculator" element={<ROICalculator />} />
               <Route path="/calculators/business/break-even-calculator" element={<BreakEvenCalculator />} />
+              
+              {/* Health & Fitness Calculators */}
+              <Route path="/calculators/health-fitness/bmi-calculator" element={<BMICalculator />} />
+              <Route path="/calculators/health-fitness/calorie-calculator" element={<CalorieCalculator />} />
+              <Route path="/calculators/health-fitness/macro-calculator" element={<MacroCalculator />} />
+              <Route path="/calculators/health-fitness/body-fat-calculator" element={<BodyFatCalculator />} />
               
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
