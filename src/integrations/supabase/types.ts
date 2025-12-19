@@ -14,7 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      calculation_history: {
+        Row: {
+          calculator_name: string
+          calculator_type: string
+          created_at: string
+          id: string
+          inputs: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          calculator_name: string
+          calculator_type: string
+          created_at?: string
+          id?: string
+          inputs?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          calculator_name?: string
+          calculator_type?: string
+          created_at?: string
+          id?: string
+          inputs?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          plan_type: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          plan_type?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          plan_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      saved_calculations: {
+        Row: {
+          calculator_name: string
+          calculator_type: string
+          created_at: string
+          id: string
+          inputs: Json
+          is_shared: boolean
+          result: Json
+          share_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          calculator_name: string
+          calculator_type: string
+          created_at?: string
+          id?: string
+          inputs?: Json
+          is_shared?: boolean
+          result?: Json
+          share_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          calculator_name?: string
+          calculator_type?: string
+          created_at?: string
+          id?: string
+          inputs?: Json
+          is_shared?: boolean
+          result?: Json
+          share_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
