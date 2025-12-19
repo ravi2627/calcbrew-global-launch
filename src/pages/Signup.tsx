@@ -55,23 +55,26 @@ const Signup = () => {
     }
     
     setIsLoading(true);
-    const { error } = await signUp(email, password, name);
-    setIsLoading(false);
-    
-    if (error) {
+    try {
+      const { error } = await signUp(email, password, name);
+
+      if (error) {
+        toast({
+          title: "Signup failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({
-        title: "Signup failed",
-        description: error.message,
-        variant: "destructive",
+        title: "Account created!",
+        description: "Welcome to CalcBrew. Let's get started!",
       });
-      return;
+      // Redirect handled by AuthNavigator + existing session listener (prevents race conditions)
+    } finally {
+      setIsLoading(false);
     }
-    
-    toast({
-      title: "Account created!",
-      description: "Welcome to CalcBrew. Let's get started!",
-    });
-    navigate("/dashboard", { replace: true });
   };
 
   const handleOAuth = async (provider: 'google' | 'github') => {
