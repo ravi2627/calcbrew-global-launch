@@ -4,7 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { UserProvider } from "@/contexts/UserContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Pricing from "./pages/Pricing";
 import Calculators from "./pages/Calculators";
@@ -15,6 +16,18 @@ import Terms from "./pages/Terms";
 import Disclaimer from "./pages/Disclaimer";
 import CategoryPage from "./pages/CategoryPage";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import {
+  DashboardOverview,
+  DashboardHistory,
+  DashboardSaved,
+  DashboardShared,
+  DashboardExports,
+  DashboardSettings,
+  DashboardBilling,
+} from "./pages/dashboard";
 
 // Home & Construction Calculators
 import {
@@ -54,7 +67,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
+      <AuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -64,6 +77,21 @@ const App = () => (
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/calculators" element={<Calculators />} />
               <Route path="/calculators/:category" element={<CategoryPage />} />
+              
+              {/* Auth Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              
+              {/* Dashboard Routes (Protected) */}
+              <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+                <Route index element={<DashboardOverview />} />
+                <Route path="history" element={<DashboardHistory />} />
+                <Route path="saved" element={<DashboardSaved />} />
+                <Route path="shared" element={<DashboardShared />} />
+                <Route path="exports" element={<DashboardExports />} />
+                <Route path="settings" element={<DashboardSettings />} />
+                <Route path="billing" element={<DashboardBilling />} />
+              </Route>
               
               {/* Home & Construction Calculators */}
               <Route path="/calculators/home-construction/square-footage-calculator" element={<SquareFootageCalculator />} />
@@ -101,7 +129,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
-      </UserProvider>
+      </AuthProvider>
     </QueryClientProvider>
   </HelmetProvider>
 );
