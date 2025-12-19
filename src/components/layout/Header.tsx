@@ -3,6 +3,7 @@ import { Calculator, Menu, X, ChevronDown, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { ThemeToggle } from "@/components/theme";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -103,7 +104,8 @@ const Header = () => {
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-2">
+          <ThemeToggle />
           {isLoading ? (
             <div className="h-9 w-20 animate-pulse rounded bg-muted" />
           ) : user ? (
@@ -213,6 +215,11 @@ const Header = () => {
             >
               About
             </Link>
+
+            <div className="flex items-center justify-between pt-4 border-t border-border">
+              <span className="text-sm font-medium text-muted-foreground">Theme</span>
+              <ThemeToggle />
+            </div>
 
             <div className="flex flex-col gap-2 pt-4 border-t border-border">
               {user ? (
