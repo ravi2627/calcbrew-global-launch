@@ -5,7 +5,12 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const footerLinks = {
-    calculators: [
+    product: [
+      { href: "/calculators", label: "All Calculators" },
+      { href: "/pricing", label: "Pricing" },
+      { href: "/pricing", label: "Go Pro" },
+    ],
+    categories: [
       { href: "/calculators/home-construction", label: "Home & Construction" },
       { href: "/calculators/finance", label: "Finance" },
       { href: "/calculators/business", label: "Business" },
@@ -15,7 +20,6 @@ const Footer = () => {
     company: [
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
-      { href: "/pricing", label: "Pricing" },
     ],
     legal: [
       { href: "/privacy-policy", label: "Privacy Policy" },
@@ -27,9 +31,9 @@ const Footer = () => {
   return (
     <footer className="border-t border-border bg-secondary/30">
       <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
           {/* Brand */}
-          <div className="space-y-4">
+          <div className="col-span-2 md:col-span-3 lg:col-span-1 space-y-4">
             <Link to="/" className="flex items-center gap-2 font-bold text-xl text-foreground">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
                 <Calculator className="h-5 w-5 text-primary-foreground" />
@@ -41,11 +45,28 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Calculators */}
+          {/* Product */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Calculators</h3>
+            <h3 className="font-semibold text-foreground mb-4">Product</h3>
             <ul className="space-y-3">
-              {footerLinks.calculators.map((link) => (
+              {footerLinks.product.map((link, index) => (
+                <li key={`${link.href}-${index}`}>
+                  <Link
+                    to={link.href}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Categories */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Categories</h3>
+            <ul className="space-y-3">
+              {footerLinks.categories.map((link) => (
                 <li key={link.href}>
                   <Link
                     to={link.href}
@@ -55,14 +76,6 @@ const Footer = () => {
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link
-                  to="/calculators"
-                  className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
-                >
-                  View All Calculators →
-                </Link>
-              </li>
             </ul>
           </div>
 
