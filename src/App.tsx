@@ -18,6 +18,7 @@ import CategoryPage from "./pages/CategoryPage";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import SharedCalculation from "./pages/SharedCalculation";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import {
   DashboardOverview,
@@ -81,6 +82,9 @@ const App = () => (
               {/* Auth Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              
+              {/* Shared Calculation (Public) */}
+              <Route path="/shared/:token" element={<SharedCalculation />} />
               
               {/* Dashboard Routes (Protected) */}
               <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
