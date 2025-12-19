@@ -9,10 +9,10 @@ import {
   History,
   Bookmark,
   Share2,
-  Crown,
   ArrowRight,
   Sparkles,
-  Lock,
+  TrendingUp,
+  FileDown,
 } from "lucide-react";
 
 const DashboardOverview = () => {
@@ -23,214 +23,194 @@ const DashboardOverview = () => {
 
   const userName = profile?.full_name || user?.email?.split("@")[0] || "there";
 
-  const stats = [
-    {
-      label: "Total Calculations",
-      value: isPro ? history.length : "—",
-      icon: Calculator,
-      locked: !isPro,
-    },
-    {
-      label: "Saved Calculations",
-      value: isPro ? saved.length : "—",
-      icon: Bookmark,
-      locked: !isPro,
-    },
-    {
-      label: "Shared Links",
-      value: isPro ? shared.length : "—",
-      icon: Share2,
-      locked: !isPro,
-    },
+  // Quick access calculators
+  const quickCalculators = [
+    { name: "Mortgage", href: "/calculators/finance/mortgage-calculator", icon: "🏠" },
+    { name: "EMI", href: "/calculators/finance/emi-calculator", icon: "💳" },
+    { name: "Profit Margin", href: "/calculators/business/profit-margin-calculator", icon: "📊" },
+    { name: "Square Footage", href: "/calculators/home-construction/square-footage-calculator", icon: "📐" },
+    { name: "BMI", href: "/calculators/health-fitness/bmi-calculator", icon: "💪" },
+    { name: "Loan", href: "/calculators/finance/loan-calculator", icon: "💰" },
   ];
 
-  const proFeatures = [
-    "Unlimited calculation history",
-    "Save and organize calculations",
-    "Share results with unique links",
-    "Export to PDF & Excel",
-    "No advertisements",
-    "Priority support",
-  ];
+  // Activity stats for Pro users
+  const activityStats = isPro ? [
+    { label: "Total Calculations", value: history.length, icon: Calculator },
+    { label: "Saved", value: saved.length, icon: Bookmark },
+    { label: "Shared", value: shared.length, icon: Share2 },
+  ] : null;
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Welcome back, {userName}!</h1>
-          <p className="text-muted-foreground">
-            Here's an overview of your CalcBrew activity
-          </p>
-        </div>
-        {isPro ? (
-          <Badge className="w-fit bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 text-white">
-            <Crown className="mr-2 h-4 w-4" />
-            Pro Member
-          </Badge>
-        ) : (
-          <Link to="/pricing">
-            <Button>
-              <Crown className="mr-2 h-4 w-4" />
-              Upgrade to Pro
-            </Button>
-          </Link>
-        )}
+    <div className="space-y-8 max-w-4xl mx-auto">
+      {/* Welcome Section - Clean and friendly */}
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold text-foreground">
+          Welcome back, {userName}
+        </h1>
+        <p className="text-muted-foreground">
+          Quickly access your calculators and recent activity
+        </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        {stats.map((stat) => (
-          <Card key={stat.label}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.label}
-              </CardTitle>
-              {stat.locked ? (
-                <Lock className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
-              )}
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stat.locked ? (
-                  <span className="text-muted-foreground">Locked</span>
-                ) : (
-                  stat.value
-                )}
+      {/* Quick Access Calculators - Primary value */}
+      <section>
+        <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+          Quick Access
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {quickCalculators.map((calc) => (
+            <Link key={calc.href} to={calc.href}>
+              <Card className="card-hover h-full">
+                <CardContent className="p-4 flex items-center gap-3">
+                  <span className="text-2xl">{calc.icon}</span>
+                  <span className="font-medium text-sm">{calc.name}</span>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+        <Link to="/calculators" className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-4">
+          View all calculators
+          <ArrowRight className="h-3 w-3" />
+        </Link>
+      </section>
+
+      {/* Activity Stats - For Pro users */}
+      {isPro && activityStats && (
+        <section>
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+            Your Activity
+          </h2>
+          <div className="grid grid-cols-3 gap-3">
+            {activityStats.map((stat) => (
+              <Card key={stat.label}>
+                <CardContent className="p-4 text-center">
+                  <stat.icon className="h-5 w-5 mx-auto text-muted-foreground mb-2" />
+                  <p className="text-2xl font-semibold">{stat.value}</p>
+                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Recent Calculations - Show for Pro */}
+      {isPro && history.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              Recent Calculations
+            </h2>
+            <Link to="/dashboard/history" className="text-sm text-primary hover:underline">
+              View all
+            </Link>
+          </div>
+          <Card>
+            <CardContent className="p-0 divide-y divide-border">
+              {history.slice(0, 4).map((item) => (
+                <div key={item.id} className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
+                      <Calculator className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm capitalize">
+                        {item.calculator_name || item.calculator_type.replace(/-/g, " ")}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(item.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
+      {/* Pro Features Preview - For free users, subtle and contextual */}
+      {!isPro && (
+        <section>
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+            Pro Features
+          </h2>
+          <div className="grid sm:grid-cols-3 gap-3">
+            <Card className="border-dashed">
+              <CardContent className="p-4 text-center">
+                <Bookmark className="h-5 w-5 mx-auto text-muted-foreground mb-2" />
+                <p className="text-sm font-medium">Save Calculations</p>
+                <Badge variant="secondary" className="mt-2 text-xs">
+                  Pro
+                </Badge>
+              </CardContent>
+            </Card>
+            <Card className="border-dashed">
+              <CardContent className="p-4 text-center">
+                <Share2 className="h-5 w-5 mx-auto text-muted-foreground mb-2" />
+                <p className="text-sm font-medium">Share Results</p>
+                <Badge variant="secondary" className="mt-2 text-xs">
+                  Pro
+                </Badge>
+              </CardContent>
+            </Card>
+            <Card className="border-dashed">
+              <CardContent className="p-4 text-center">
+                <FileDown className="h-5 w-5 mx-auto text-muted-foreground mb-2" />
+                <p className="text-sm font-medium">Export to PDF</p>
+                <Badge variant="secondary" className="mt-2 text-xs">
+                  Pro
+                </Badge>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      )}
+
+      {/* Empty state for Pro users with no history */}
+      {isPro && history.length === 0 && (
+        <section>
+          <Card className="border-dashed">
+            <CardContent className="py-12 text-center">
+              <TrendingUp className="h-10 w-10 mx-auto text-muted-foreground mb-4" />
+              <h3 className="font-medium mb-1">No calculations yet</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Start using calculators to build your history
+              </p>
+              <Button asChild>
+                <Link to="/calculators">Browse Calculators</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
+      {/* Upgrade CTA - Soft, at the bottom, optional feeling */}
+      {!isPro && (
+        <section className="pt-4">
+          <Card className="bg-muted/30 border-muted">
+            <CardContent className="p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Enjoying CalcBrew?</p>
+                    <p className="text-sm text-muted-foreground">
+                      Pro unlocks saving, sharing & exports.
+                    </p>
+                  </div>
+                </div>
+                <Button variant="outline" asChild className="shrink-0">
+                  <Link to="/pricing">Learn more</Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        {/* Recent Activity or Upgrade CTA */}
-        {isPro ? (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <History className="h-5 w-5" />
-                Recent Calculations
-              </CardTitle>
-              <CardDescription>Your latest calculation activity</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {history.length > 0 ? (
-                <div className="space-y-3">
-                  {history.slice(0, 5).map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between rounded-lg border p-3"
-                    >
-                      <div>
-                        <p className="font-medium capitalize">
-                          {item.calculator_type.replace(/-/g, " ")}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(item.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <Button variant="ghost" size="sm">
-                        View
-                      </Button>
-                    </div>
-                  ))}
-                  <Link to="/dashboard/history">
-                    <Button variant="outline" className="w-full">
-                      View All History
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="py-8 text-center">
-                  <Calculator className="mx-auto h-12 w-12 text-muted-foreground" />
-                  <p className="mt-2 text-muted-foreground">
-                    No calculations yet. Start using calculators to see your history!
-                  </p>
-                  <Link to="/calculators">
-                    <Button className="mt-4">
-                      Browse Calculators
-                    </Button>
-                  </Link>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                Upgrade to Pro
-              </CardTitle>
-              <CardDescription>
-                Unlock all premium features and take your calculations to the next level
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {proFeatures.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2 text-sm">
-                    <Crown className="h-4 w-4 text-amber-500" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/pricing">
-                <Button className="mt-6 w-full">
-                  <Crown className="mr-2 h-4 w-4" />
-                  Upgrade Now
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Quick Access */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calculator className="h-5 w-5" />
-              Quick Access
-            </CardTitle>
-            <CardDescription>Jump to your favorite calculators</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <Link to="/calculators/finance/mortgage-calculator">
-                <Button variant="outline" className="w-full justify-start">
-                  Mortgage Calculator
-                </Button>
-              </Link>
-              <Link to="/calculators/finance/emi-calculator">
-                <Button variant="outline" className="w-full justify-start">
-                  EMI Calculator
-                </Button>
-              </Link>
-              <Link to="/calculators/business/profit-margin-calculator">
-                <Button variant="outline" className="w-full justify-start">
-                  Profit Margin
-                </Button>
-              </Link>
-              <Link to="/calculators/home-construction/square-footage-calculator">
-                <Button variant="outline" className="w-full justify-start">
-                  Square Footage
-                </Button>
-              </Link>
-            </div>
-            <Link to="/calculators">
-              <Button variant="link" className="mt-4 w-full">
-                View All Calculators
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
+        </section>
+      )}
     </div>
   );
 };
