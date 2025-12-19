@@ -97,8 +97,7 @@ const Login = () => {
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
-      navigate(from, { replace: true });
-    } catch (err) {
+      // Redirect handled by AuthNavigator + existing session listener (prevents race conditions)
       toast({
         title: "Login failed",
         description: "An unexpected error occurred. Please try again.",
