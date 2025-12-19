@@ -9,6 +9,7 @@ import SEOContent from "@/components/home/SEOContent";
 import FAQSection from "@/components/home/FAQSection";
 import FinalCTA from "@/components/home/FinalCTA";
 import { AdSection } from "@/components/ads";
+import ScrollReveal from "@/components/ui/scroll-reveal";
 
 const Index = () => {
   return (
@@ -35,21 +36,40 @@ const Index = () => {
 
       {/* NO ADS ABOVE THE FOLD - Hero is 100% content-focused */}
       <HeroSection />
-      <TrustStrip />
-      <CategoriesSection />
-      <FeaturedCalculators />
-      <WhyCalcBrew />
-      <SEOContent />
+      
+      <ScrollReveal variant="fade-up" delay={100}>
+        <TrustStrip />
+      </ScrollReveal>
+      
+      <ScrollReveal variant="fade-up" delay={0}>
+        <CategoriesSection />
+      </ScrollReveal>
+      
+      <ScrollReveal variant="fade-up" delay={0}>
+        <FeaturedCalculators />
+      </ScrollReveal>
+      
+      <ScrollReveal variant="fade-up" delay={0}>
+        <WhyCalcBrew />
+      </ScrollReveal>
+      
+      <ScrollReveal variant="fade-up" delay={0}>
+        <SEOContent />
+      </ScrollReveal>
       
       {/* AD ZONE 1: After SEO content block - Safe placement */}
       <AdSection slot="home-after-seo" format="horizontal" />
       
-      <FAQSection />
+      <ScrollReveal variant="fade-up" delay={0}>
+        <FAQSection />
+      </ScrollReveal>
       
       {/* AD ZONE 2: After FAQ section - Safe placement */}
       <AdSection slot="home-after-faq" format="leaderboard" />
       
-      <FinalCTA />
+      <ScrollReveal variant="zoom-in" delay={0}>
+        <FinalCTA />
+      </ScrollReveal>
       
       {/* AD ZONE 3: Before footer - Safe placement */}
       <AdSection slot="home-before-footer" format="horizontal" className="border-t border-border" />
