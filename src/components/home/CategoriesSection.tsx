@@ -77,7 +77,7 @@ const CategoriesSection = () => {
                 to={category.href}
                 className="group relative block rounded-xl border border-border bg-card p-6 shadow-soft card-hover accent-line h-full"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-4 icon-glow transition-all duration-300">
                   <category.icon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">

@@ -59,8 +59,8 @@ const FeaturedCalculators = () => {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {featuredCalculators.map((calc, index) => (
             <ScrollReveal key={calc.title} variant="fade-up" delay={index * 100}>
-              <div className="rounded-xl border border-border bg-card p-6 shadow-soft card-hover h-full">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-4">
+              <div className="rounded-xl border border-border bg-card p-6 shadow-soft card-hover-intense h-full">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-4 icon-glow transition-all duration-300">
                   <calc.icon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-semibold text-foreground mb-2">
