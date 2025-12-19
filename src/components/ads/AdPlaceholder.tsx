@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useUser } from "@/contexts/UserContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AdPlaceholderProps {
   slot: string;
@@ -31,7 +31,7 @@ const AdPlaceholder = ({
   className = "",
   label = "Advertisement",
 }: AdPlaceholderProps) => {
-  const { isPro } = useUser();
+  const { isPro } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);

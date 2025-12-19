@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Lock, Sparkles, Download, Share2, History, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@/contexts/UserContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ProGateProps {
   calculatorName: string;
@@ -9,7 +9,7 @@ interface ProGateProps {
 }
 
 const ProGate = ({ calculatorName, children }: ProGateProps) => {
-  const { isPro } = useUser();
+  const { isPro } = useAuth();
 
   if (isPro) {
     return <>{children}</>;
