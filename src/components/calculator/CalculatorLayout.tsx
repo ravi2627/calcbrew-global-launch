@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { AdSection, SidebarAd } from "@/components/ads";
-import { useUser } from "@/contexts/UserContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface FAQItem {
   question: string;
@@ -44,7 +44,7 @@ const CalculatorLayout = ({
   children,
   canonicalUrl,
 }: CalculatorLayoutProps) => {
-  const { isPro } = useUser();
+  const { isPro } = useAuth();
 
   const faqSchema = {
     "@context": "https://schema.org",

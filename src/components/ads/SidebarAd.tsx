@@ -1,5 +1,5 @@
 import AdPlaceholder from "./AdPlaceholder";
-import { useUser } from "@/contexts/UserContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 /**
  * SidebarAd Component
@@ -8,7 +8,7 @@ import { useUser } from "@/contexts/UserContext";
  * Hidden on mobile to prevent accidental clicks and maintain UX.
  */
 const SidebarAd = () => {
-  const { isPro } = useUser();
+  const { isPro } = useAuth();
 
   if (isPro) return null;
 
