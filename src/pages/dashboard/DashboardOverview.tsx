@@ -16,12 +16,12 @@ import {
 } from "lucide-react";
 
 const DashboardOverview = () => {
-  const { user, isPro } = useAuth();
+  const { user, profile, isPro } = useAuth();
   const { history } = useCalculationHistory();
   const { saved } = useSavedCalculations();
   const { shared } = useSharedCalculations();
 
-  const userName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "there";
+  const userName = profile?.full_name || user?.email?.split("@")[0] || "there";
 
   const stats = [
     {

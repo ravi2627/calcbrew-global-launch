@@ -123,7 +123,7 @@ const DashboardHistory = () => {
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {Object.keys(item.result_data).length} results
+                        {Object.keys(item.result || {}).length} results
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">

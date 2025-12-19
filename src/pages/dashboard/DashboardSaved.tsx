@@ -75,7 +75,7 @@ const DashboardSaved = () => {
                 <div className="flex items-start justify-between">
                   <div>
                     <CardTitle className="text-base">
-                      {item.name || "Untitled Calculation"}
+                      {item.title || "Untitled Calculation"}
                     </CardTitle>
                     <CardDescription className="capitalize">
                       {item.calculator_type.replace(/-/g, " ")}

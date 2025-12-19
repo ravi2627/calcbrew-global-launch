@@ -88,8 +88,8 @@ const DashboardShared = () => {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="text-base capitalize">
-                        {item.calculator_type.replace(/-/g, " ")}
+                      <CardTitle className="text-base">
+                        Shared Calculation
                       </CardTitle>
                       <CardDescription>
                         Created {new Date(item.created_at).toLocaleDateString()}

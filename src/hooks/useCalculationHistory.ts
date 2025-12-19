@@ -1,207 +1,337 @@
-import { useState, useCallback } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import type { CalculationHistory, SavedCalculation, SharedCalculation } from "@/types/database";
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import type { Json } from '@/integrations/supabase/types';
 
-// Local storage keys
-const HISTORY_KEY = "calcbrew_history";
-const SAVED_KEY = "calcbrew_saved";
-const SHARED_KEY = "calcbrew_shared";
+export interface CalculationHistoryItem {
+  id: string;
+  calculator_type: string;
+  calculator_name: string;
+  inputs: Record<string, unknown>;
+  result: Record<string, unknown>;
+  created_at: string;
+}
 
-// Helper to generate IDs
-const generateId = () => crypto.randomUUID();
-const generateShareToken = () => Math.random().toString(36).substring(2, 15);
+export interface SavedCalculationItem {
+  id: string;
+  calculator_type: string;
+  calculator_name: string;
+  title: string;
+  inputs: Record<string, unknown>;
+  result: Record<string, unknown>;
+  is_shared: boolean;
+  share_id: string | null;
+  created_at: string;
+}
+
+export interface SharedCalculationItem {
+  id: string;
+  saved_calculation_id: string;
+  share_token: string;
+  views: number;
+  expires_at: string | null;
+  created_at: string;
+}
 
 export const useCalculationHistory = () => {
   const { user, isPro } = useAuth();
-  const [history, setHistory] = useState<CalculationHistory[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const stored = localStorage.getItem(HISTORY_KEY);
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [history, setHistory] = useState<CalculationHistoryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Add calculation to history (Pro only)
-  const addToHistory = useCallback((
-    calculator_type: string,
-    input_data: Record<string, unknown>,
-    result_data: Record<string, unknown>
-  ) => {
-    if (!user || !isPro) return null;
+  const fetchHistory = useCallback(async () => {
+    if (!user || !isPro) {
+      setHistory([]);
+      return;
+    }
     
-    // TODO: Replace with supabase.from('calculation_history').insert()
-    const newEntry: CalculationHistory = {
-      id: generateId(),
-      user_id: user.id,
-      calculator_type,
-      input_data,
-      result_data,
-      created_at: new Date().toISOString(),
-    };
-
-    setHistory((prev) => {
-      const updated = [newEntry, ...prev].slice(0, 100); // Keep last 100
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
-      return updated;
-    });
-
-    return newEntry;
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from('calculation_history')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(100);
+    
+    if (!error && data) {
+      setHistory(data.map(item => ({
+        id: item.id,
+        calculator_type: item.calculator_type,
+        calculator_name: item.calculator_name,
+        inputs: (item.inputs || {}) as Record<string, unknown>,
+        result: (item.result || {}) as Record<string, unknown>,
+        created_at: item.created_at,
+      })));
+    }
+    setIsLoading(false);
   }, [user, isPro]);
 
-  // Get user's calculation history
-  const getHistory = useCallback(() => {
-    if (!user || !isPro) return [];
-    // TODO: Replace with supabase.from('calculation_history').select().eq('user_id', user.id)
-    return history.filter((h) => h.user_id === user.id);
-  }, [user, isPro, history]);
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
 
-  // Clear history
-  const clearHistory = useCallback(() => {
+  const addToHistory = async (
+    calculatorType: string,
+    calculatorName: string,
+    inputs: Record<string, unknown>,
+    result: Record<string, unknown>
+  ) => {
     if (!user) return;
-    setHistory([]);
-    localStorage.removeItem(HISTORY_KEY);
-  }, [user]);
+
+    const { error } = await supabase
+      .from('calculation_history')
+      .insert([{
+        user_id: user.id,
+        calculator_type: calculatorType,
+        calculator_name: calculatorName,
+        inputs: inputs as Json,
+        result: result as Json,
+      }]);
+
+    if (!error && isPro) {
+      fetchHistory();
+    }
+  };
+
+  const clearHistory = async () => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('calculation_history')
+      .delete()
+      .eq('user_id', user.id);
+
+    if (!error) {
+      setHistory([]);
+    }
+  };
 
   return {
-    history: getHistory(),
+    history,
+    isLoading,
     addToHistory,
     clearHistory,
+    refreshHistory: fetchHistory,
     canAccessHistory: isPro,
   };
 };
 
 export const useSavedCalculations = () => {
   const { user, isPro } = useAuth();
-  const [saved, setSaved] = useState<SavedCalculation[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const stored = localStorage.getItem(SAVED_KEY);
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [saved, setSaved] = useState<SavedCalculationItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const saveCalculation = useCallback((
-    calculator_type: string,
-    input_data: Record<string, unknown>,
-    result_data: Record<string, unknown>,
-    name?: string
-  ) => {
-    if (!user || !isPro) return null;
+  const fetchSaved = useCallback(async () => {
+    if (!user || !isPro) {
+      setSaved([]);
+      return;
+    }
     
-    // TODO: Replace with supabase.from('saved_calculations').insert()
-    const newEntry: SavedCalculation = {
-      id: generateId(),
-      user_id: user.id,
-      calculator_type,
-      name,
-      input_data,
-      result_data,
-      created_at: new Date().toISOString(),
-    };
-
-    setSaved((prev) => {
-      const updated = [newEntry, ...prev];
-      localStorage.setItem(SAVED_KEY, JSON.stringify(updated));
-      return updated;
-    });
-
-    return newEntry;
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from('saved_calculations')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    
+    if (!error && data) {
+      setSaved(data.map(item => ({
+        id: item.id,
+        calculator_type: item.calculator_type,
+        calculator_name: item.calculator_name,
+        title: item.title,
+        inputs: (item.inputs || {}) as Record<string, unknown>,
+        result: (item.result || {}) as Record<string, unknown>,
+        is_shared: item.is_shared,
+        share_id: item.share_id,
+        created_at: item.created_at,
+      })));
+    }
+    setIsLoading(false);
   }, [user, isPro]);
 
-  const deleteSaved = useCallback((id: string) => {
-    if (!user) return;
-    // TODO: Replace with supabase.from('saved_calculations').delete().eq('id', id)
-    setSaved((prev) => {
-      const updated = prev.filter((s) => s.id !== id);
-      localStorage.setItem(SAVED_KEY, JSON.stringify(updated));
-      return updated;
-    });
-  }, [user]);
+  useEffect(() => {
+    fetchSaved();
+  }, [fetchSaved]);
 
-  const renameSaved = useCallback((id: string, name: string) => {
-    if (!user) return;
-    // TODO: Replace with supabase.from('saved_calculations').update({ name }).eq('id', id)
-    setSaved((prev) => {
-      const updated = prev.map((s) => s.id === id ? { ...s, name } : s);
-      localStorage.setItem(SAVED_KEY, JSON.stringify(updated));
-      return updated;
-    });
-  }, [user]);
+  const saveCalculation = async (
+    calculatorType: string,
+    calculatorName: string,
+    title: string,
+    inputs: Record<string, unknown>,
+    result: Record<string, unknown>
+  ) => {
+    if (!user || !isPro) return null;
 
-  const getSaved = useCallback(() => {
-    if (!user || !isPro) return [];
-    return saved.filter((s) => s.user_id === user.id);
-  }, [user, isPro, saved]);
+    const { data, error } = await supabase
+      .from('saved_calculations')
+      .insert([{
+        user_id: user.id,
+        calculator_type: calculatorType,
+        calculator_name: calculatorName,
+        title,
+        inputs: inputs as Json,
+        result: result as Json,
+      }])
+      .select()
+      .single();
+
+    if (!error && data) {
+      fetchSaved();
+      return data;
+    }
+    return null;
+  };
+
+  const deleteSaved = async (id: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('saved_calculations')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (!error) {
+      setSaved(prev => prev.filter(c => c.id !== id));
+    }
+  };
+
+  const renameSaved = async (id: string, title: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('saved_calculations')
+      .update({ title })
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (!error) {
+      fetchSaved();
+    }
+  };
 
   return {
-    saved: getSaved(),
+    saved,
+    isLoading,
     saveCalculation,
     deleteSaved,
     renameSaved,
+    refreshSaved: fetchSaved,
     canAccessSaved: isPro,
   };
 };
 
 export const useSharedCalculations = () => {
   const { user, isPro } = useAuth();
-  const [shared, setShared] = useState<SharedCalculation[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const stored = localStorage.getItem(SHARED_KEY);
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [shared, setShared] = useState<SharedCalculationItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const shareCalculation = useCallback((
-    calculator_type: string,
-    input_data: Record<string, unknown>,
-    result_data: Record<string, unknown>,
-    expiresInDays?: number
-  ) => {
-    if (!user || !isPro) return null;
+  const fetchShared = useCallback(async () => {
+    if (!user || !isPro) {
+      setShared([]);
+      return;
+    }
     
-    // TODO: Replace with supabase.from('shared_calculations').insert()
-    const newEntry: SharedCalculation = {
-      id: generateId(),
-      user_id: user.id,
-      share_token: generateShareToken(),
-      calculator_type,
-      input_data,
-      result_data,
-      expires_at: expiresInDays 
-        ? new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000).toISOString()
-        : null,
-      created_at: new Date().toISOString(),
-    };
-
-    setShared((prev) => {
-      const updated = [newEntry, ...prev];
-      localStorage.setItem(SHARED_KEY, JSON.stringify(updated));
-      return updated;
-    });
-
-    return newEntry;
+    setIsLoading(true);
+    
+    // Get shared calculations for user's saved calculations
+    const { data: savedData } = await supabase
+      .from('saved_calculations')
+      .select('id')
+      .eq('user_id', user.id);
+    
+    if (savedData && savedData.length > 0) {
+      const savedIds = savedData.map(s => s.id);
+      const { data, error } = await supabase
+        .from('shared_calculations')
+        .select('*')
+        .in('saved_calculation_id', savedIds)
+        .order('created_at', { ascending: false });
+      
+      if (!error && data) {
+        setShared(data);
+      }
+    } else {
+      setShared([]);
+    }
+    setIsLoading(false);
   }, [user, isPro]);
 
-  const deleteShared = useCallback((id: string) => {
-    if (!user) return;
-    // TODO: Replace with supabase.from('shared_calculations').delete().eq('id', id)
-    setShared((prev) => {
-      const updated = prev.filter((s) => s.id !== id);
-      localStorage.setItem(SHARED_KEY, JSON.stringify(updated));
-      return updated;
-    });
-  }, [user]);
+  useEffect(() => {
+    fetchShared();
+  }, [fetchShared]);
 
-  const getShared = useCallback(() => {
-    if (!user || !isPro) return [];
-    return shared.filter((s) => s.user_id === user.id);
-  }, [user, isPro, shared]);
+  const createShare = async (savedCalculationId: string, expiresAt?: Date) => {
+    if (!user || !isPro) return null;
 
-  const getByToken = useCallback((token: string) => {
-    // TODO: Replace with supabase.from('shared_calculations').select().eq('share_token', token)
-    return shared.find((s) => s.share_token === token && (!s.expires_at || new Date(s.expires_at) > new Date()));
-  }, [shared]);
+    const shareToken = crypto.randomUUID();
+
+    const { data, error } = await supabase
+      .from('shared_calculations')
+      .insert({
+        saved_calculation_id: savedCalculationId,
+        share_token: shareToken,
+        expires_at: expiresAt?.toISOString() || null,
+      })
+      .select()
+      .single();
+
+    if (!error && data) {
+      // Update the saved calculation to mark as shared
+      await supabase
+        .from('saved_calculations')
+        .update({ is_shared: true, share_id: shareToken })
+        .eq('id', savedCalculationId);
+      
+      fetchShared();
+      return data;
+    }
+    return null;
+  };
+
+  const deleteShared = async (id: string) => {
+    const { error } = await supabase
+      .from('shared_calculations')
+      .delete()
+      .eq('id', id);
+
+    if (!error) {
+      setShared(prev => prev.filter(s => s.id !== id));
+    }
+  };
+
+  const getByToken = async (token: string) => {
+    const { data: shareData, error: shareError } = await supabase
+      .from('shared_calculations')
+      .select('*')
+      .eq('share_token', token)
+      .maybeSingle();
+
+    if (shareError || !shareData) return null;
+
+    // Increment view count
+    await supabase
+      .from('shared_calculations')
+      .update({ views: (shareData.views || 0) + 1 })
+      .eq('id', shareData.id);
+
+    // Get the saved calculation data
+    const { data: savedData } = await supabase
+      .from('saved_calculations')
+      .select('*')
+      .eq('id', shareData.saved_calculation_id)
+      .maybeSingle();
+
+    return { share: shareData, calculation: savedData };
+  };
 
   return {
-    shared: getShared(),
-    shareCalculation,
+    shared,
+    isLoading,
+    createShare,
     deleteShared,
     getByToken,
+    refreshShared: fetchShared,
     canAccessShared: isPro,
   };
 };

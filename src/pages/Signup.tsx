@@ -48,7 +48,7 @@ const Signup = () => {
     }
     
     setIsLoading(true);
-    const { error } = await signUp(email, password);
+    const { error } = await signUp(email, password, name);
     setIsLoading(false);
     
     if (error) {
