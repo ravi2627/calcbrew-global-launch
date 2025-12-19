@@ -7,12 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Calculator, Loader2, Mail, Lock, Chrome, Github, User } from "lucide-react";
+import { Calculator, Loader2, Mail, Lock, Chrome, Github, User, CheckCircle, RefreshCw } from "lucide-react";
 import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
 
 const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name is too long"),
-  email: z.string().email("Please enter a valid email address").max(255, "Email is too long"),
+  email: z.string().trim().email("Please enter a valid email address").max(255, "Email is too long"),
   password: z.string().min(8, "Password must be at least 8 characters").max(128, "Password is too long"),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -26,6 +27,8 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const { user, signUp, signInWithGoogle, signInWithGithub } = useAuth();
@@ -43,7 +46,7 @@ const Signup = () => {
     e.preventDefault();
     setErrors({});
     
-    const validation = signupSchema.safeParse({ name, email, password, confirmPassword });
+    const validation = signupSchema.safeParse({ name, email: email.trim(), password, confirmPassword });
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {};
       validation.error.errors.forEach((err) => {
@@ -56,11 +59,49 @@ const Signup = () => {
     
     setIsLoading(true);
     try {
-      const { error } = await signUp(email, password, name);
+      const { error } = await signUp(validation.data.email, password, name);
+
+      if (error) {
+        // Check for "User already registered" error
+        if (error.message.toLowerCase().includes("already registered") || 
+            error.message.toLowerCase().includes("already exists")) {
+          toast({
+            title: "Account exists",
+            description: "An account with this email already exists. Please sign in instead.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Signup failed",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+        return;
+      }
+
+      // Show verification screen
+      setShowVerification(true);
+      toast({
+        title: "Check your email!",
+        description: "We've sent you a verification link.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    setIsResending(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: email.trim(),
+      });
 
       if (error) {
         toast({
-          title: "Signup failed",
+          title: "Couldn't resend email",
           description: error.message,
           variant: "destructive",
         });
@@ -68,12 +109,11 @@ const Signup = () => {
       }
 
       toast({
-        title: "Account created!",
-        description: "Welcome to CalcBrew. Let's get started!",
+        title: "Email sent!",
+        description: "We've resent the verification link to your email.",
       });
-      // Redirect handled by AuthNavigator + existing session listener (prevents race conditions)
     } finally {
-      setIsLoading(false);
+      setIsResending(false);
     }
   };
 
@@ -92,6 +132,88 @@ const Signup = () => {
       });
     }
   };
+
+  // Email verification reminder screen
+  if (showVerification) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4 py-12">
+        <Card className="w-full max-w-md shadow-lg">
+          <CardHeader className="space-y-4 text-center">
+            <Link to="/" className="mx-auto flex items-center gap-2">
+              <Calculator className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold">CalcBrew</span>
+            </Link>
+            <div className="flex justify-center">
+              <div className="rounded-full bg-green-100 p-3 dark:bg-green-900/30">
+                <CheckCircle className="h-12 w-12 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+            <div>
+              <CardTitle className="text-2xl">Verify your email</CardTitle>
+              <CardDescription className="mt-2">
+                We've sent a verification link to
+              </CardDescription>
+              <p className="mt-1 font-medium text-foreground">{email}</p>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="rounded-lg border bg-muted/50 p-4">
+              <h4 className="mb-2 font-medium">Next steps:</h4>
+              <ol className="list-inside list-decimal space-y-1 text-sm text-muted-foreground">
+                <li>Check your email inbox</li>
+                <li>Click the verification link</li>
+                <li>Start using CalcBrew!</li>
+              </ol>
+            </div>
+
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                Didn't receive the email?
+              </p>
+              <Button
+                variant="link"
+                onClick={handleResendVerification}
+                disabled={isResending}
+                className="mt-1"
+              >
+                {isResending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Resend verification email
+                  </>
+                )}
+              </Button>
+            </div>
+
+            <Separator />
+
+            <div className="flex flex-col gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowVerification(false)}
+              >
+                Use a different email
+              </Button>
+              <Link to="/login">
+                <Button variant="ghost" className="w-full">
+                  Already verified? Sign in
+                </Button>
+              </Link>
+            </div>
+
+            <p className="text-center text-xs text-muted-foreground">
+              Check your spam folder if you don't see the email in your inbox.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4 py-12">
