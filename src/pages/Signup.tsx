@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Calculator, Loader2, Mail, Lock, Chrome, Github, User, CheckCircle, RefreshCw } from "lucide-react";
+import { Calculator, Loader2, Mail, Lock, Chrome, User, CheckCircle, RefreshCw } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -31,7 +31,7 @@ const Signup = () => {
   const [showVerification, setShowVerification] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
-  const { user, signUp, signInWithGoogle, signInWithGithub } = useAuth();
+  const { user, signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -117,16 +117,14 @@ const Signup = () => {
     }
   };
 
-  const handleOAuth = async (provider: 'google' | 'github') => {
+  const handleGoogleSignup = async () => {
     setIsLoading(true);
-    const { error } = provider === 'google' 
-      ? await signInWithGoogle()
-      : await signInWithGithub();
+    const { error } = await signInWithGoogle();
     setIsLoading(false);
     
     if (error) {
       toast({
-        title: `${provider === 'google' ? 'Google' : 'GitHub'} signup unavailable`,
+        title: "Google signup unavailable",
         description: error.message,
         variant: "destructive",
       });
@@ -229,27 +227,16 @@ const Signup = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* OAuth Buttons */}
-          <div className="grid gap-3">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => handleOAuth('google')}
-              disabled={isLoading}
-            >
-              <Chrome className="mr-2 h-4 w-4" />
-              Continue with Google
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => handleOAuth('github')}
-              disabled={isLoading}
-            >
-              <Github className="mr-2 h-4 w-4" />
-              Continue with GitHub
-            </Button>
-          </div>
+          {/* Google OAuth */}
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogleSignup}
+            disabled={isLoading}
+          >
+            <Chrome className="mr-2 h-4 w-4" />
+            Continue with Google
+          </Button>
 
           <div className="relative">
             <Separator />
