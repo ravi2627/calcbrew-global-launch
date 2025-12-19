@@ -41,13 +41,8 @@ const Index = () => {
         <TrustStrip />
       </ScrollReveal>
       
-      <ScrollReveal variant="fade-up" delay={0}>
-        <CategoriesSection />
-      </ScrollReveal>
-      
-      <ScrollReveal variant="fade-up" delay={0}>
-        <FeaturedCalculators />
-      </ScrollReveal>
+      <CategoriesSection />
+      <FeaturedCalculators />
       
       <ScrollReveal variant="fade-up" delay={0}>
         <WhyCalcBrew />
