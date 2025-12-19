@@ -14,6 +14,7 @@ import {
   Calculator,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
+import { AdSection, SidebarAd } from "@/components/ads";
 
 interface CategoryData {
   title: string;
@@ -166,58 +167,74 @@ const CategoryPage = () => {
             All Calculators
           </Link>
 
-          {/* Header */}
-          <div className="flex items-start gap-6 mb-12">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <Icon className="h-8 w-8 text-primary" />
-            </div>
+          {/* Main content with optional sidebar */}
+          <div className="grid lg:grid-cols-[1fr_300px] gap-8">
+            {/* Main content column */}
             <div>
-              <h1 className="text-3xl font-bold text-foreground sm:text-4xl mb-2">
-                {data.title} Calculators
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                {data.longDescription}
-              </p>
-            </div>
-          </div>
-
-          {/* Calculator Grid */}
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {data.calculators.map((calc) => (
-              <div
-                key={calc.name}
-                className="rounded-xl border border-border bg-card p-6 shadow-soft card-hover"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 mb-4">
-                  <Calculator className="h-5 w-5 text-primary" />
+              {/* Header */}
+              <div className="flex items-start gap-6 mb-12">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                  <Icon className="h-8 w-8 text-primary" />
                 </div>
-                <h2 className="font-semibold text-foreground mb-2">{calc.name}</h2>
-                <p className="text-sm text-muted-foreground mb-4">{calc.description}</p>
-                <Button variant="outline" size="sm" disabled>
-                  Coming Soon
-                </Button>
+                <div>
+                  <h1 className="text-3xl font-bold text-foreground sm:text-4xl mb-2">
+                    {data.title} Calculators
+                  </h1>
+                  <p className="text-lg text-muted-foreground max-w-2xl">
+                    {data.longDescription}
+                  </p>
+                </div>
               </div>
-            ))}
-          </div>
 
-          {/* SEO Content */}
-          <div className="mt-16 p-8 rounded-2xl bg-secondary/30 border border-border">
-            <h2 className="text-2xl font-bold text-foreground mb-4">
-              About Our {data.title} Calculators
-            </h2>
-            <p className="text-muted-foreground mb-4">
-              CalcBrew's {data.title.toLowerCase()} calculators are designed to provide 
-              accurate, reliable results for your specific needs. Each calculator uses 
-              verified formulas and industry standards to ensure you can trust the results.
-            </p>
-            <p className="text-muted-foreground">
-              Whether you're a professional or just need quick calculations for personal 
-              use, our tools are built to be intuitive, fast, and accessible on any device. 
-              All calculators are free to use with no registration required.
-            </p>
+              {/* Calculator Grid - NO ADS inside calculator tools */}
+              <div className="grid gap-6 sm:grid-cols-2">
+                {data.calculators.map((calc) => (
+                  <div
+                    key={calc.name}
+                    className="rounded-xl border border-border bg-card p-6 shadow-soft card-hover"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 mb-4">
+                      <Calculator className="h-5 w-5 text-primary" />
+                    </div>
+                    <h2 className="font-semibold text-foreground mb-2">{calc.name}</h2>
+                    <p className="text-sm text-muted-foreground mb-4">{calc.description}</p>
+                    <Button variant="outline" size="sm" disabled>
+                      Coming Soon
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              {/* SEO Content - ads come AFTER this, not inside */}
+              <div className="mt-16 p-8 rounded-2xl bg-secondary/30 border border-border">
+                <h2 className="text-2xl font-bold text-foreground mb-4">
+                  About Our {data.title} Calculators
+                </h2>
+                <p className="text-muted-foreground mb-4">
+                  CalcBrew's {data.title.toLowerCase()} calculators are designed to provide 
+                  accurate, reliable results for your specific needs. Each calculator uses 
+                  verified formulas and industry standards to ensure you can trust the results.
+                </p>
+                <p className="text-muted-foreground">
+                  Whether you're a professional or just need quick calculations for personal 
+                  use, our tools are built to be intuitive, fast, and accessible on any device. 
+                  All calculators are free to use with no registration required.
+                </p>
+              </div>
+            </div>
+
+            {/* Sidebar - Desktop only, below navigation level */}
+            <div className="hidden lg:block">
+              <div className="sticky top-24">
+                <SidebarAd />
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* AD ZONE: After content sections - Safe placement */}
+      <AdSection slot={`category-${category}-bottom`} format="horizontal" />
     </Layout>
   );
 };

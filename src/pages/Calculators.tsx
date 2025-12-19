@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Calculator,
 } from "lucide-react";
+import { AdSection } from "@/components/ads";
 
 const categories = [
   {
@@ -96,6 +97,7 @@ const Calculators = () => {
             </p>
           </div>
 
+          {/* NO ADS in the main category grid area */}
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {categories.map((category) => (
               <Link
@@ -139,6 +141,9 @@ const Calculators = () => {
           </div>
         </div>
       </section>
+
+      {/* AD ZONE: After main content - Safe placement */}
+      <AdSection slot="calculators-bottom" format="horizontal" />
     </Layout>
   );
 };
