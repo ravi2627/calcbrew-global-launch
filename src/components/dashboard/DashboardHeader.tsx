@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/theme";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Calculator,
-  Crown,
   LogOut,
   Settings,
   User,
@@ -26,7 +26,7 @@ const DashboardHeader = ({ onMenuClick }: DashboardHeaderProps) => {
   const { user, isPro, signOut } = useAuth();
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-background px-4 lg:px-6">
+    <header className="flex h-14 items-center justify-between border-b bg-background px-4 lg:px-6">
       {/* Mobile Menu Button */}
       <Button
         variant="ghost"
@@ -39,35 +39,28 @@ const DashboardHeader = ({ onMenuClick }: DashboardHeaderProps) => {
 
       {/* Logo (mobile only) */}
       <Link to="/" className="flex items-center gap-2 lg:hidden">
-        <Calculator className="h-6 w-6 text-primary" />
-        <span className="font-bold">CalcBrew</span>
+        <Calculator className="h-5 w-5 text-primary" />
+        <span className="font-semibold">CalcBrew</span>
       </Link>
 
       {/* Spacer */}
       <div className="hidden lg:block" />
 
       {/* Right side */}
-      <div className="flex items-center gap-4">
-        {!isPro && (
-          <Link to="/pricing">
-            <Button size="sm" className="hidden sm:flex">
-              <Crown className="mr-2 h-4 w-4" />
-              Upgrade to Pro
-            </Button>
-          </Link>
-        )}
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm text-primary-foreground">
+            <Button variant="ghost" size="sm" className="flex items-center gap-2 px-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
                 {user?.email?.charAt(0).toUpperCase() || "U"}
               </div>
-              <span className="hidden sm:inline-block">
+              <span className="hidden sm:inline-block text-sm">
                 {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
               </span>
               {isPro && (
-                <Badge className="ml-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                <Badge variant="secondary" className="text-xs px-1.5 py-0">
                   Pro
                 </Badge>
               )}
@@ -75,7 +68,7 @@ const DashboardHeader = ({ onMenuClick }: DashboardHeaderProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <div className="px-2 py-1.5">
-              <p className="text-sm font-medium">{user?.email}</p>
+              <p className="text-sm font-medium truncate">{user?.email}</p>
               <p className="text-xs text-muted-foreground">
                 {isPro ? "Pro Plan" : "Free Plan"}
               </p>
