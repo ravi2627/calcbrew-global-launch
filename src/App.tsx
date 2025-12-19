@@ -40,6 +40,15 @@ import {
   PayrollCalculator,
 } from "./pages/calculators/finance";
 
+// Business Calculators
+import {
+  ProfitMarginCalculator,
+  MarkupCalculator,
+  CommissionCalculator,
+  ROICalculator,
+  BreakEvenCalculator,
+} from "./pages/calculators/business";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -75,6 +84,13 @@ const App = () => (
               <Route path="/calculators/finance/compound-interest-calculator" element={<CompoundInterestCalculator />} />
               <Route path="/calculators/finance/savings-calculator" element={<SavingsCalculator />} />
               <Route path="/calculators/finance/payroll-calculator" element={<PayrollCalculator />} />
+              
+              {/* Business Calculators */}
+              <Route path="/calculators/business/profit-margin-calculator" element={<ProfitMarginCalculator />} />
+              <Route path="/calculators/business/markup-calculator" element={<MarkupCalculator />} />
+              <Route path="/calculators/business/commission-calculator" element={<CommissionCalculator />} />
+              <Route path="/calculators/business/roi-calculator" element={<ROICalculator />} />
+              <Route path="/calculators/business/break-even-calculator" element={<BreakEvenCalculator />} />
               
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
