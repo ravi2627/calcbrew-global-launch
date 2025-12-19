@@ -9,6 +9,7 @@ import {
   Wrench,
   ArrowRight
 } from "lucide-react";
+import ScrollReveal from "@/components/ui/scroll-reveal";
 
 const categories = [
   {
@@ -70,26 +71,27 @@ const CategoriesSection = () => {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {categories.map((category) => (
-            <Link
-              key={category.title}
-              to={category.href}
-              className="group relative rounded-xl border border-border bg-card p-6 shadow-soft card-hover accent-line"
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-4">
-                <category.icon className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                {category.title}
-              </h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                {category.description}
-              </p>
-              <div className="flex items-center text-sm font-medium text-primary">
-                Browse calculators
-                <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </div>
-            </Link>
+          {categories.map((category, index) => (
+            <ScrollReveal key={category.title} variant="fade-up" delay={index * 75}>
+              <Link
+                to={category.href}
+                className="group relative block rounded-xl border border-border bg-card p-6 shadow-soft card-hover accent-line h-full"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-4">
+                  <category.icon className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                  {category.title}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {category.description}
+                </p>
+                <div className="flex items-center text-sm font-medium text-primary">
+                  Browse calculators
+                  <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              </Link>
+            </ScrollReveal>
           ))}
         </div>
       </div>

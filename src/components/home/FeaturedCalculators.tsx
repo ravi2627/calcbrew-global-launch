@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Ruler, DollarSign, Calculator, PaintBucket, Scale, Percent } from "lucide-react";
+import ScrollReveal from "@/components/ui/scroll-reveal";
 
 const featuredCalculators = [
   {
@@ -56,24 +57,23 @@ const FeaturedCalculators = () => {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredCalculators.map((calc) => (
-            <div
-              key={calc.title}
-              className="rounded-xl border border-border bg-card p-6 shadow-soft card-hover"
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-4">
-                <calc.icon className="h-6 w-6 text-primary" />
+          {featuredCalculators.map((calc, index) => (
+            <ScrollReveal key={calc.title} variant="fade-up" delay={index * 100}>
+              <div className="rounded-xl border border-border bg-card p-6 shadow-soft card-hover h-full">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-4">
+                  <calc.icon className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-2">
+                  {calc.title}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {calc.description}
+                </p>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to={calc.href}>Open Calculator</Link>
+                </Button>
               </div>
-              <h3 className="font-semibold text-foreground mb-2">
-                {calc.title}
-              </h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                {calc.description}
-              </p>
-              <Button variant="outline" size="sm" asChild>
-                <Link to={calc.href}>Open Calculator</Link>
-              </Button>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
 
