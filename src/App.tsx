@@ -27,6 +27,19 @@ import {
   ConstructionCostEstimator,
 } from "./pages/calculators/home-construction";
 
+// Finance Calculators
+import {
+  SalaryToHourlyCalculator,
+  HourlyToSalaryCalculator,
+  LoanCalculator,
+  EMICalculator,
+  MortgageCalculator,
+  SimpleInterestCalculator,
+  CompoundInterestCalculator,
+  SavingsCalculator,
+  PayrollCalculator,
+} from "./pages/calculators/finance";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -51,6 +64,17 @@ const App = () => (
               <Route path="/calculators/home-construction/flooring-cost-calculator" element={<FlooringCostCalculator />} />
               <Route path="/calculators/home-construction/roofing-calculator" element={<RoofingCalculator />} />
               <Route path="/calculators/home-construction/construction-cost-estimator" element={<ConstructionCostEstimator />} />
+              
+              {/* Finance Calculators */}
+              <Route path="/calculators/finance/salary-to-hourly-calculator" element={<SalaryToHourlyCalculator />} />
+              <Route path="/calculators/finance/hourly-to-salary-calculator" element={<HourlyToSalaryCalculator />} />
+              <Route path="/calculators/finance/loan-calculator" element={<LoanCalculator />} />
+              <Route path="/calculators/finance/emi-calculator" element={<EMICalculator />} />
+              <Route path="/calculators/finance/mortgage-calculator" element={<MortgageCalculator />} />
+              <Route path="/calculators/finance/simple-interest-calculator" element={<SimpleInterestCalculator />} />
+              <Route path="/calculators/finance/compound-interest-calculator" element={<CompoundInterestCalculator />} />
+              <Route path="/calculators/finance/savings-calculator" element={<SavingsCalculator />} />
+              <Route path="/calculators/finance/payroll-calculator" element={<PayrollCalculator />} />
               
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
