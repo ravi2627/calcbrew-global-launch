@@ -19,6 +19,8 @@ import CategoryPage from "./pages/CategoryPage";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import SharedCalculation from "./pages/SharedCalculation";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import {
@@ -84,6 +86,8 @@ const App = () => (
               {/* Auth Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               
               {/* Shared Calculation (Public) */}
               <Route path="/shared/:token" element={<SharedCalculation />} />
