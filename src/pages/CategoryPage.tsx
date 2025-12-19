@@ -86,10 +86,10 @@ const categoryData: Record<string, CategoryData> = {
     longDescription:
       "Track your health and fitness goals with our calculator tools. Calculate your BMI, determine daily calorie needs, plan macronutrient ratios, and monitor your fitness progress with tools based on established health formulas.",
     calculators: [
-      { name: "BMI Calculator", description: "Calculate body mass index for health assessment", href: "/calculators/health-fitness" },
-      { name: "Calorie Calculator", description: "Determine daily calorie needs for your goals", href: "/calculators/health-fitness" },
-      { name: "Macro Calculator", description: "Plan protein, carb, and fat intake", href: "/calculators/health-fitness" },
-      { name: "Body Fat Calculator", description: "Estimate body fat percentage", href: "/calculators/health-fitness" },
+      { name: "BMI Calculator", description: "Calculate body mass index for health assessment", href: "/calculators/health-fitness/bmi-calculator" },
+      { name: "Calorie Calculator", description: "Determine daily calorie needs for your goals", href: "/calculators/health-fitness/calorie-calculator" },
+      { name: "Macro Calculator", description: "Plan protein, carb, and fat intake", href: "/calculators/health-fitness/macro-calculator" },
+      { name: "Body Fat Calculator", description: "Estimate body fat percentage", href: "/calculators/health-fitness/body-fat-calculator" },
     ],
   },
   "time-date": {
