@@ -16,6 +16,17 @@ import Disclaimer from "./pages/Disclaimer";
 import CategoryPage from "./pages/CategoryPage";
 import NotFound from "./pages/NotFound";
 
+// Home & Construction Calculators
+import {
+  SquareFootageCalculator,
+  PaintCalculator,
+  TileCalculator,
+  ConcreteCalculator,
+  FlooringCostCalculator,
+  RoofingCalculator,
+  ConstructionCostEstimator,
+} from "./pages/calculators/home-construction";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -31,6 +42,16 @@ const App = () => (
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/calculators" element={<Calculators />} />
               <Route path="/calculators/:category" element={<CategoryPage />} />
+              
+              {/* Home & Construction Calculators */}
+              <Route path="/calculators/home-construction/square-footage-calculator" element={<SquareFootageCalculator />} />
+              <Route path="/calculators/home-construction/paint-calculator" element={<PaintCalculator />} />
+              <Route path="/calculators/home-construction/tile-calculator" element={<TileCalculator />} />
+              <Route path="/calculators/home-construction/concrete-calculator" element={<ConcreteCalculator />} />
+              <Route path="/calculators/home-construction/flooring-cost-calculator" element={<FlooringCostCalculator />} />
+              <Route path="/calculators/home-construction/roofing-calculator" element={<RoofingCalculator />} />
+              <Route path="/calculators/home-construction/construction-cost-estimator" element={<ConstructionCostEstimator />} />
+              
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
