@@ -11,9 +11,39 @@ import { Calculator, Loader2, Mail, Lock, Chrome, Github } from "lucide-react";
 import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string()
+    .trim()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address")
+    .max(255, "Email must be less than 255 characters"),
+  password: z.string()
+    .min(1, "Password is required")
+    .min(6, "Password must be at least 6 characters")
+    .max(128, "Password must be less than 128 characters"),
 });
+
+// Map Supabase error messages to user-friendly messages
+const getAuthErrorMessage = (error: Error): string => {
+  const message = error.message.toLowerCase();
+  
+  if (message.includes("invalid login credentials") || message.includes("invalid_credentials")) {
+    return "Invalid email or password. Please check your credentials and try again.";
+  }
+  if (message.includes("email not confirmed")) {
+    return "Please verify your email address before signing in. Check your inbox for a confirmation link.";
+  }
+  if (message.includes("too many requests") || message.includes("rate limit")) {
+    return "Too many login attempts. Please wait a few minutes before trying again.";
+  }
+  if (message.includes("user not found")) {
+    return "No account found with this email. Please sign up first.";
+  }
+  if (message.includes("network") || message.includes("fetch")) {
+    return "Network error. Please check your internet connection and try again.";
+  }
+  
+  return error.message || "An unexpected error occurred. Please try again.";
+};
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -39,7 +69,7 @@ const Login = () => {
     e.preventDefault();
     setErrors({});
     
-    const validation = loginSchema.safeParse({ email, password });
+    const validation = loginSchema.safeParse({ email: email.trim(), password });
     if (!validation.success) {
       const fieldErrors: { email?: string; password?: string } = {};
       validation.error.errors.forEach((err) => {
@@ -51,23 +81,32 @@ const Login = () => {
     }
     
     setIsLoading(true);
-    const { error } = await signIn(email, password);
-    setIsLoading(false);
-    
-    if (error) {
+    try {
+      const { error } = await signIn(validation.data.email, validation.data.password);
+      
+      if (error) {
+        toast({
+          title: "Login failed",
+          description: getAuthErrorMessage(error),
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully logged in.",
+      });
+      navigate(from, { replace: true });
+    } catch (err) {
       toast({
         title: "Login failed",
-        description: error.message,
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setIsLoading(false);
     }
-    
-    toast({
-      title: "Welcome back!",
-      description: "You have successfully logged in.",
-    });
-    navigate(from, { replace: true });
   };
 
   const handleOAuth = async (provider: 'google' | 'github') => {
