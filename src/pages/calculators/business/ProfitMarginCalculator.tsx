@@ -39,6 +39,8 @@ const ProfitMarginCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { revenue, cost };
+
   return (
     <CalculatorLayout
       title="Profit Margin Calculator"
@@ -123,6 +125,9 @@ The markup is ($40 / $60) × 100 = 66.7%`}
               ? "Profit margin shows the percentage of revenue that becomes profit. Compare this to industry benchmarks for meaningful analysis."
               : undefined
           }
+          calculatorType="business"
+          calculatorName="Profit Margin Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

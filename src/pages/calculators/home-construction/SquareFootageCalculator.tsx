@@ -47,6 +47,8 @@ const SquareFootageCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { length, width, unit };
+
   return (
     <CalculatorLayout
       title="Square Footage Calculator"
@@ -144,6 +146,9 @@ To convert to square yards: 120 ÷ 9 = 13.33 sq yd`}
               ? "This is the total area of your space. Use these measurements for flooring, painting, and construction material estimates."
               : undefined
           }
+          calculatorType="home-construction"
+          calculatorName="Square Footage Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

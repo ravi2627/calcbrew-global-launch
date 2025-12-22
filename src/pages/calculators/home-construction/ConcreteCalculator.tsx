@@ -53,6 +53,8 @@ const ConcreteCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { length, width, depth, depthUnit };
+
   return (
     <CalculatorLayout
       title="Concrete Calculator"
@@ -167,6 +169,9 @@ For bags:
               ? "Order 5-10% extra to account for spillage and uneven ground. For ready-mix delivery, round up to the nearest half or quarter yard."
               : undefined
           }
+          calculatorType="home-construction"
+          calculatorName="Concrete Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

@@ -61,6 +61,8 @@ const MarkupCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { cost, markupPercent, sellingPrice, calcMode };
+
   return (
     <CalculatorLayout
       title="Markup Calculator"
@@ -186,6 +188,9 @@ Note: This 50% markup equals a 33.3% profit margin.`}
               ? "Remember that markup and profit margin are different. Both are shown above for comparison."
               : undefined
           }
+          calculatorType="business"
+          calculatorName="Markup Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

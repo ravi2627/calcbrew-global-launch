@@ -60,6 +60,8 @@ const FlooringCostCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { length, width, flooringType, laborCost, wastage };
+
   return (
     <CalculatorLayout
       title="Flooring Cost Calculator"
@@ -192,6 +194,9 @@ Total: $2,200 + $800 = $3,000`}
               ? "Prices vary by region and product quality. Get quotes from multiple suppliers for the best deals."
               : undefined
           }
+          calculatorType="home-construction"
+          calculatorName="Flooring Cost Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

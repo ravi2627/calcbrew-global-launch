@@ -63,6 +63,8 @@ const MortgageCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { homePrice, downPayment, rate, tenure, propertyTax, insurance };
+
   return (
     <CalculatorLayout
       title="Mortgage Calculator"
@@ -206,6 +208,9 @@ Total PITI = $1,517 + $300 + $100 = $1,917/month`}
               ? "This estimate does not include PMI (if applicable), HOA fees, or maintenance costs. Budget an additional 1-2% of home value annually for maintenance."
               : undefined
           }
+          calculatorType="finance"
+          calculatorName="Mortgage Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

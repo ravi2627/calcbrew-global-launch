@@ -58,6 +58,8 @@ const PaintCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { length, width, height, doors, windows, coats };
+
   return (
     <CalculatorLayout
       title="Paint Calculator"
@@ -203,6 +205,9 @@ Total (2 coats) = 0.8 × 2 = 1.6 gallons ≈ 2 gallons`}
               ? "Round up to the nearest gallon when purchasing paint. It's always good to have extra for touch-ups."
               : undefined
           }
+          calculatorType="home-construction"
+          calculatorName="Paint Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

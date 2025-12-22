@@ -63,6 +63,8 @@ const SavingsCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { initialDeposit, monthlyContribution, rate, years, compounding };
+
   return (
     <CalculatorLayout
       title="Savings Calculator"
@@ -195,6 +197,9 @@ Interest earned: $20,496`}
               ? "This projection assumes consistent contributions and interest rates. Actual returns may vary. Consider tax implications for different account types."
               : undefined
           }
+          calculatorType="finance"
+          calculatorName="Savings Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

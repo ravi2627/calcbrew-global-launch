@@ -43,6 +43,8 @@ const SimpleInterestCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { principal, rate, time };
+
   return (
     <CalculatorLayout
       title="Simple Interest Calculator"
@@ -145,6 +147,9 @@ Final amount = $10,000 + $1,500 = $11,500`}
               ? "Simple interest provides linear growth. For comparison, compound interest would yield higher returns over the same period."
               : undefined
           }
+          calculatorType="finance"
+          calculatorName="Simple Interest Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

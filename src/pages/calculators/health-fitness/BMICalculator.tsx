@@ -65,6 +65,8 @@ const BMICalculator = () => {
     setResults([]);
   };
 
+  const inputs = { weight, height, unit };
+
   return (
     <CalculatorLayout
       title="BMI Calculator"
@@ -158,7 +160,12 @@ This falls in the "Normal weight" category (18.5 - 24.9)`}
           </Button>
         </div>
 
-        {results.length > 0 && <CalculatorResult results={results} />}
+        <CalculatorResult
+          results={results}
+          calculatorType="health-fitness"
+          calculatorName="BMI Calculator"
+          inputs={inputs}
+        />
       </div>
     </CalculatorLayout>
   );
