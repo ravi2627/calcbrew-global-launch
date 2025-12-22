@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalculatorLayout, CalculatorResult, ProGate } from "@/components/calculator";
+import { CalculatorLayout, CalculatorResult } from "@/components/calculator";
 import { formatNumber, formatCurrency, parseInput, isValidPositive } from "@/lib/calculators";
 
 const ConstructionCostEstimator = () => {
@@ -70,11 +70,13 @@ const ConstructionCostEstimator = () => {
     setResults([]);
   };
 
+  const inputs = { squareFootage, constructionType, floors, region };
+
   return (
     <CalculatorLayout
       title="Construction Cost Estimator"
       description="Estimate construction costs for new home builds. Calculate building costs by square footage, quality level, and location."
-      intro="Get a comprehensive estimate for your new construction project. This Pro calculator provides detailed cost breakdowns including labor, materials, permits, and contingency."
+      intro="Get a comprehensive estimate for your new construction project. This calculator provides detailed cost breakdowns including labor, materials, permits, and contingency."
       category="Home & Construction"
       categorySlug="home-construction"
       formula="Total Cost = Square Footage × Base Cost × Region Multiplier × Floor Multiplier"
@@ -114,86 +116,87 @@ Breakdown:
       ]}
       canonicalUrl="/calculators/home-construction/construction-cost-estimator"
     >
-      <ProGate calculatorName="Construction Cost Estimator">
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="squareFootage">Total Square Footage</Label>
-              <Input
-                id="squareFootage"
-                type="number"
-                placeholder="e.g., 2000"
-                value={squareFootage}
-                onChange={(e) => setSquareFootage(e.target.value)}
-                min="0"
-                step="100"
-              />
-            </div>
-            <div>
-              <Label htmlFor="floors">Number of Floors</Label>
-              <Select value={floors} onValueChange={setFloors}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 Floor</SelectItem>
-                  <SelectItem value="2">2 Floors</SelectItem>
-                  <SelectItem value="3">3 Floors</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="squareFootage">Total Square Footage</Label>
+            <Input
+              id="squareFootage"
+              type="number"
+              placeholder="e.g., 2000"
+              value={squareFootage}
+              onChange={(e) => setSquareFootage(e.target.value)}
+              min="0"
+              step="100"
+            />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="constructionType">Construction Quality</Label>
-              <Select value={constructionType} onValueChange={setConstructionType}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="economy">Economy ($100-160/sq ft)</SelectItem>
-                  <SelectItem value="standard">Standard ($150-250/sq ft)</SelectItem>
-                  <SelectItem value="premium">Premium ($250-450/sq ft)</SelectItem>
-                  <SelectItem value="luxury">Luxury ($400-650/sq ft)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="region">Cost Region</Label>
-              <Select value={region} onValueChange={setRegion}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low Cost (-15%)</SelectItem>
-                  <SelectItem value="medium">Average Cost</SelectItem>
-                  <SelectItem value="high">High Cost (+25%)</SelectItem>
-                  <SelectItem value="vhigh">Very High (+50%)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="floors">Number of Floors</Label>
+            <Select value={floors} onValueChange={setFloors}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1 Floor</SelectItem>
+                <SelectItem value="2">2 Floors</SelectItem>
+                <SelectItem value="3">3 Floors</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-
-          <div className="flex gap-4">
-            <Button onClick={calculate} className="flex-1">
-              Estimate Construction Cost
-            </Button>
-            <Button onClick={reset} variant="outline">
-              Reset
-            </Button>
-          </div>
-
-          <CalculatorResult
-            results={results}
-            explanation={
-              results.length > 0
-                ? "These are planning estimates only. Get detailed quotes from licensed contractors for accurate pricing."
-                : undefined
-            }
-          />
         </div>
-      </ProGate>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="constructionType">Construction Quality</Label>
+            <Select value={constructionType} onValueChange={setConstructionType}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="economy">Economy ($100-160/sq ft)</SelectItem>
+                <SelectItem value="standard">Standard ($150-250/sq ft)</SelectItem>
+                <SelectItem value="premium">Premium ($250-450/sq ft)</SelectItem>
+                <SelectItem value="luxury">Luxury ($400-650/sq ft)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="region">Cost Region</Label>
+            <Select value={region} onValueChange={setRegion}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="low">Low Cost (-15%)</SelectItem>
+                <SelectItem value="medium">Average Cost</SelectItem>
+                <SelectItem value="high">High Cost (+25%)</SelectItem>
+                <SelectItem value="vhigh">Very High (+50%)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <Button onClick={calculate} className="flex-1">
+            Estimate Construction Cost
+          </Button>
+          <Button onClick={reset} variant="outline">
+            Reset
+          </Button>
+        </div>
+
+        <CalculatorResult
+          results={results}
+          explanation={
+            results.length > 0
+              ? "These are planning estimates only. Get detailed quotes from licensed contractors for accurate pricing."
+              : undefined
+          }
+          calculatorType="home-construction"
+          calculatorName="Construction Cost Estimator"
+          inputs={inputs}
+        />
+      </div>
     </CalculatorLayout>
   );
 };

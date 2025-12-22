@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import ProActionsBar from "./ProActionsBar";
 
 interface ResultItem {
   label: string;
@@ -9,10 +10,25 @@ interface ResultItem {
 interface CalculatorResultProps {
   results: ResultItem[];
   explanation?: string;
+  calculatorType?: string;
+  calculatorName?: string;
+  inputs?: Record<string, unknown>;
 }
 
-const CalculatorResult = ({ results, explanation }: CalculatorResultProps) => {
+const CalculatorResult = ({ 
+  results, 
+  explanation,
+  calculatorType,
+  calculatorName,
+  inputs,
+}: CalculatorResultProps) => {
   if (results.length === 0) return null;
+
+  // Convert results array to a record for storage
+  const resultRecord = results.reduce((acc, item) => {
+    acc[item.label] = item.value;
+    return acc;
+  }, {} as Record<string, string>);
 
   return (
     <div className="mt-6 space-y-4">
@@ -36,6 +52,17 @@ const CalculatorResult = ({ results, explanation }: CalculatorResultProps) => {
             </div>
           ))}
         </div>
+
+        {/* Pro Actions - Save, Share, Export */}
+        {calculatorType && calculatorName && (
+          <ProActionsBar
+            calculatorType={calculatorType}
+            calculatorName={calculatorName}
+            inputs={inputs || {}}
+            result={resultRecord}
+            hasResult={results.length > 0}
+          />
+        )}
       </div>
 
       {explanation && (

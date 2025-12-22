@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CalculatorLayout, CalculatorResult, ProGate } from "@/components/calculator";
+import { CalculatorLayout, CalculatorResult } from "@/components/calculator";
 import { formatCurrency, formatNumber, parseInput, isValidPositive } from "@/lib/calculators";
 
 const BreakEvenCalculator = () => {
@@ -66,11 +66,14 @@ const BreakEvenCalculator = () => {
     setResults([]);
   };
 
+  // Input values for saving
+  const inputs = { fixedCosts, pricePerUnit, variableCostPerUnit, targetProfit };
+
   return (
     <CalculatorLayout
       title="Break-Even Calculator"
       description="Calculate break-even point for your business. Free break-even analysis calculator for pricing and profit planning."
-      intro="Determine how many units you need to sell to cover all costs. This Pro calculator helps with pricing decisions, profit planning, and business viability analysis."
+      intro="Determine how many units you need to sell to cover all costs. This calculator helps with pricing decisions, profit planning, and business viability analysis."
       category="Business"
       categorySlug="business"
       formula="Break-Even Units = Fixed Costs / (Price per Unit - Variable Cost per Unit)"
@@ -115,80 +118,81 @@ At 600 units: Profit = 100 × $20 = $2,000`}
       ]}
       canonicalUrl="/calculators/business/break-even-calculator"
     >
-      <ProGate calculatorName="Break-Even Calculator">
-        <div className="space-y-6">
-          <div>
-            <Label htmlFor="fixedCosts">Fixed Costs ($/period)</Label>
-            <Input
-              id="fixedCosts"
-              type="number"
-              placeholder="e.g., 10000"
-              value={fixedCosts}
-              onChange={(e) => setFixedCosts(e.target.value)}
-              min="0"
-              step="100"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="pricePerUnit">Price per Unit ($)</Label>
-              <Input
-                id="pricePerUnit"
-                type="number"
-                placeholder="e.g., 50"
-                value={pricePerUnit}
-                onChange={(e) => setPricePerUnit(e.target.value)}
-                min="0"
-                step="0.01"
-              />
-            </div>
-            <div>
-              <Label htmlFor="variableCostPerUnit">Variable Cost per Unit ($)</Label>
-              <Input
-                id="variableCostPerUnit"
-                type="number"
-                placeholder="e.g., 30"
-                value={variableCostPerUnit}
-                onChange={(e) => setVariableCostPerUnit(e.target.value)}
-                min="0"
-                step="0.01"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="targetProfit">Target Profit (optional, $)</Label>
-            <Input
-              id="targetProfit"
-              type="number"
-              placeholder="e.g., 5000"
-              value={targetProfit}
-              onChange={(e) => setTargetProfit(e.target.value)}
-              min="0"
-              step="100"
-            />
-          </div>
-
-          <div className="flex gap-4">
-            <Button onClick={calculate} className="flex-1">
-              Calculate Break-Even
-            </Button>
-            <Button onClick={reset} variant="outline">
-              Reset
-            </Button>
-          </div>
-
-          <CalculatorResult
-            results={results}
-            explanation={
-              results.length > 0
-                ? "Sales above break-even generate profit equal to the contribution margin times units above break-even."
-                : undefined
-            }
+      <div className="space-y-6">
+        <div>
+          <Label htmlFor="fixedCosts">Fixed Costs ($/period)</Label>
+          <Input
+            id="fixedCosts"
+            type="number"
+            placeholder="e.g., 10000"
+            value={fixedCosts}
+            onChange={(e) => setFixedCosts(e.target.value)}
+            min="0"
+            step="100"
           />
         </div>
-      </ProGate>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="pricePerUnit">Price per Unit ($)</Label>
+            <Input
+              id="pricePerUnit"
+              type="number"
+              placeholder="e.g., 50"
+              value={pricePerUnit}
+              onChange={(e) => setPricePerUnit(e.target.value)}
+              min="0"
+              step="0.01"
+            />
+          </div>
+          <div>
+            <Label htmlFor="variableCostPerUnit">Variable Cost per Unit ($)</Label>
+            <Input
+              id="variableCostPerUnit"
+              type="number"
+              placeholder="e.g., 30"
+              value={variableCostPerUnit}
+              onChange={(e) => setVariableCostPerUnit(e.target.value)}
+              min="0"
+              step="0.01"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="targetProfit">Target Profit (optional, $)</Label>
+          <Input
+            id="targetProfit"
+            type="number"
+            placeholder="e.g., 5000"
+            value={targetProfit}
+            onChange={(e) => setTargetProfit(e.target.value)}
+            min="0"
+            step="100"
+          />
+        </div>
+
+        <div className="flex gap-4">
+          <Button onClick={calculate} className="flex-1">
+            Calculate Break-Even
+          </Button>
+          <Button onClick={reset} variant="outline">
+            Reset
+          </Button>
+        </div>
+
+        <CalculatorResult
+          results={results}
+          explanation={
+            results.length > 0
+              ? "Sales above break-even generate profit equal to the contribution margin times units above break-even."
+              : undefined
+          }
+          calculatorType="business"
+          calculatorName="Break-Even Calculator"
+          inputs={inputs}
+        />
+      </div>
     </CalculatorLayout>
   );
 };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CalculatorLayout, CalculatorResult, ProGate } from "@/components/calculator";
+import { CalculatorLayout, CalculatorResult } from "@/components/calculator";
 import { formatCurrency, formatNumber, parseInput, isValidPositive } from "@/lib/calculators";
 
 const ROICalculator = () => {
@@ -60,11 +60,13 @@ const ROICalculator = () => {
     setResults([]);
   };
 
+  const inputs = { initialInvestment, finalValue, years, additionalCosts };
+
   return (
     <CalculatorLayout
       title="ROI Calculator"
       description="Calculate Return on Investment (ROI) for any investment. Free ROI calculator with annualized returns and payback period."
-      intro="Calculate the return on your investment to evaluate profitability. This Pro calculator provides total ROI, annualized returns, and payback period analysis."
+      intro="Calculate the return on your investment to evaluate profitability. This calculator provides total ROI, annualized returns, and payback period analysis."
       category="Business"
       categorySlug="business"
       formula="ROI = ((Final Value - Total Investment) / Total Investment) × 100"
@@ -103,81 +105,82 @@ This means 14.5% average annual return.`}
       ]}
       canonicalUrl="/calculators/business/roi-calculator"
     >
-      <ProGate calculatorName="ROI Calculator">
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="initialInvestment">Initial Investment ($)</Label>
-              <Input
-                id="initialInvestment"
-                type="number"
-                placeholder="e.g., 10000"
-                value={initialInvestment}
-                onChange={(e) => setInitialInvestment(e.target.value)}
-                min="0"
-                step="100"
-              />
-            </div>
-            <div>
-              <Label htmlFor="additionalCosts">Additional Costs ($)</Label>
-              <Input
-                id="additionalCosts"
-                type="number"
-                placeholder="e.g., 500"
-                value={additionalCosts}
-                onChange={(e) => setAdditionalCosts(e.target.value)}
-                min="0"
-                step="100"
-              />
-            </div>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="initialInvestment">Initial Investment ($)</Label>
+            <Input
+              id="initialInvestment"
+              type="number"
+              placeholder="e.g., 10000"
+              value={initialInvestment}
+              onChange={(e) => setInitialInvestment(e.target.value)}
+              min="0"
+              step="100"
+            />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="finalValue">Final Value / Return ($)</Label>
-              <Input
-                id="finalValue"
-                type="number"
-                placeholder="e.g., 15000"
-                value={finalValue}
-                onChange={(e) => setFinalValue(e.target.value)}
-                min="0"
-                step="100"
-              />
-            </div>
-            <div>
-              <Label htmlFor="years">Time Period (Years, optional)</Label>
-              <Input
-                id="years"
-                type="number"
-                placeholder="e.g., 3"
-                value={years}
-                onChange={(e) => setYears(e.target.value)}
-                min="0"
-                step="0.5"
-              />
-            </div>
+          <div>
+            <Label htmlFor="additionalCosts">Additional Costs ($)</Label>
+            <Input
+              id="additionalCosts"
+              type="number"
+              placeholder="e.g., 500"
+              value={additionalCosts}
+              onChange={(e) => setAdditionalCosts(e.target.value)}
+              min="0"
+              step="100"
+            />
           </div>
-
-          <div className="flex gap-4">
-            <Button onClick={calculate} className="flex-1">
-              Calculate ROI
-            </Button>
-            <Button onClick={reset} variant="outline">
-              Reset
-            </Button>
-          </div>
-
-          <CalculatorResult
-            results={results}
-            explanation={
-              results.length > 0
-                ? "Annualized ROI allows fair comparison between investments of different time periods. Always consider risk alongside returns."
-                : undefined
-            }
-          />
         </div>
-      </ProGate>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="finalValue">Final Value / Return ($)</Label>
+            <Input
+              id="finalValue"
+              type="number"
+              placeholder="e.g., 15000"
+              value={finalValue}
+              onChange={(e) => setFinalValue(e.target.value)}
+              min="0"
+              step="100"
+            />
+          </div>
+          <div>
+            <Label htmlFor="years">Time Period (Years, optional)</Label>
+            <Input
+              id="years"
+              type="number"
+              placeholder="e.g., 3"
+              value={years}
+              onChange={(e) => setYears(e.target.value)}
+              min="0"
+              step="0.5"
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <Button onClick={calculate} className="flex-1">
+            Calculate ROI
+          </Button>
+          <Button onClick={reset} variant="outline">
+            Reset
+          </Button>
+        </div>
+
+        <CalculatorResult
+          results={results}
+          explanation={
+            results.length > 0
+              ? "Annualized ROI allows fair comparison between investments of different time periods. Always consider risk alongside returns."
+              : undefined
+          }
+          calculatorType="business"
+          calculatorName="ROI Calculator"
+          inputs={inputs}
+        />
+      </div>
     </CalculatorLayout>
   );
 };
