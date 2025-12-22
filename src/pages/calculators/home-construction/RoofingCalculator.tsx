@@ -69,6 +69,8 @@ const RoofingCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { length, width, pitch, wastage };
+
   return (
     <CalculatorLayout
       title="Roofing Calculator"
@@ -191,6 +193,9 @@ Bundles needed = 16 × 3 = 48 bundles`}
               ? "Don't forget to order additional materials for ridge caps, starter strips, and drip edge. Complex roofs may need more materials."
               : undefined
           }
+          calculatorType="home-construction"
+          calculatorName="Roofing Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

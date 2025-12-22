@@ -42,6 +42,8 @@ const EMICalculator = () => {
     setResults([]);
   };
 
+  const inputs = { principal, rate, tenure };
+
   return (
     <CalculatorLayout
       title="EMI Calculator"
@@ -144,6 +146,9 @@ Total interest = ₹23,16,000 - ₹10,00,000 = ₹13,16,000`}
               ? "EMI calculation uses the reducing balance method, which is standard for most bank loans. Interest is charged on the outstanding principal balance."
               : undefined
           }
+          calculatorType="finance"
+          calculatorName="EMI Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

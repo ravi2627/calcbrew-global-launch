@@ -49,6 +49,8 @@ const CommissionCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { saleAmount, commissionRate, baseSalary };
+
   return (
     <CalculatorLayout
       title="Commission Calculator"
@@ -150,6 +152,9 @@ Total = $5,000 + $2,000 = $7,000`}
               ? "Projections show potential earnings at different sales levels. This assumes a flat commission rate without tiers."
               : undefined
           }
+          calculatorType="business"
+          calculatorName="Commission Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

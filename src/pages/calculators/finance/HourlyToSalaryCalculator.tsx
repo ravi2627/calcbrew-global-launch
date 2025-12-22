@@ -44,6 +44,8 @@ const HourlyToSalaryCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { hourlyRate, hoursPerWeek, weeksPerYear };
+
   return (
     <CalculatorLayout
       title="Hourly to Salary Calculator"
@@ -146,6 +148,9 @@ Weekly = $25 × 40 = $1,000`}
               ? "This is your gross annual equivalent before taxes. Actual take-home pay will be lower after deductions."
               : undefined
           }
+          calculatorType="finance"
+          calculatorName="Hourly to Salary Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

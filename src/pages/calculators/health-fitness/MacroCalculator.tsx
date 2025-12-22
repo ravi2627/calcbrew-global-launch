@@ -74,6 +74,8 @@ const MacroCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { calories, dietType, customProtein, customCarbs, customFat, useCustom };
+
   return (
     <CalculatorLayout
       title="Macro Calculator"
@@ -207,7 +209,12 @@ Total: 600 + 800 + 600 = 2,000 calories`}
           </Button>
         </div>
 
-        {results.length > 0 && <CalculatorResult results={results} />}
+        <CalculatorResult
+          results={results}
+          calculatorType="health-fitness"
+          calculatorName="Macro Calculator"
+          inputs={inputs}
+        />
       </div>
     </CalculatorLayout>
   );

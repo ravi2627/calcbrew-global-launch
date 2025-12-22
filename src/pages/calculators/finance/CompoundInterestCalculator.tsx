@@ -49,6 +49,8 @@ const CompoundInterestCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { principal, rate, time, compounds };
+
   return (
     <CalculatorLayout
       title="Compound Interest Calculator"
@@ -172,6 +174,9 @@ Compare to simple interest: $10,000 × 5% × 10 = $5,000`}
               ? "Compound interest demonstrates the power of 'interest on interest' - your money grows exponentially over time."
               : undefined
           }
+          calculatorType="finance"
+          calculatorName="Compound Interest Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

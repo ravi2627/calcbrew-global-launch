@@ -71,6 +71,8 @@ const CalorieCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { age, weight, height, gender, activity, goal };
+
   return (
     <CalculatorLayout
       title="Calorie Calculator"
@@ -206,7 +208,12 @@ For weight gain: 2,682 + 500 = 3,182 cal/day`}
           </Button>
         </div>
 
-        {results.length > 0 && <CalculatorResult results={results} />}
+        <CalculatorResult
+          results={results}
+          calculatorType="health-fitness"
+          calculatorName="Calorie Calculator"
+          inputs={inputs}
+        />
       </div>
     </CalculatorLayout>
   );

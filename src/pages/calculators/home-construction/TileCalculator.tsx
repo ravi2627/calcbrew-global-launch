@@ -57,6 +57,8 @@ const TileCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { areaLength, areaWidth, tileLength, tileWidth, wastage };
+
   return (
     <CalculatorLayout
       title="Tile Calculator"
@@ -190,6 +192,9 @@ With 10% wastage = 75 × 1.10 = 83 tiles`}
               ? "Buy a few extra tiles beyond this estimate for future repairs. Tile colors can vary between production batches."
               : undefined
           }
+          calculatorType="home-construction"
+          calculatorName="Tile Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

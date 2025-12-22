@@ -44,6 +44,8 @@ const SalaryToHourlyCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { salary, hoursPerWeek, weeksPerYear };
+
   return (
     <CalculatorLayout
       title="Salary to Hourly Calculator"
@@ -148,6 +150,9 @@ Hourly rate = $50,000 ÷ 2,000 = $25.00/hour`}
               ? "This is your gross hourly rate before taxes and deductions. Your net (take-home) hourly rate will be lower."
               : undefined
           }
+          calculatorType="finance"
+          calculatorName="Salary to Hourly Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>

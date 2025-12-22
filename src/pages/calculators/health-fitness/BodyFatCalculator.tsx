@@ -75,6 +75,8 @@ const BodyFatCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { gender, waist, neck, height, hip };
+
   return (
     <CalculatorLayout
       title="Body Fat Calculator"
@@ -196,7 +198,12 @@ This falls in the "Fitness" category for men.`}
           </Button>
         </div>
 
-        {results.length > 0 && <CalculatorResult results={results} />}
+        <CalculatorResult
+          results={results}
+          calculatorType="health-fitness"
+          calculatorName="Body Fat Calculator"
+          inputs={inputs}
+        />
       </div>
     </CalculatorLayout>
   );

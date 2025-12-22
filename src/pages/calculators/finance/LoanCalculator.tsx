@@ -47,6 +47,8 @@ const LoanCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { principal, rate, tenure, tenureType };
+
   return (
     <CalculatorLayout
       title="Loan Calculator"
@@ -162,6 +164,9 @@ Total interest = $23,761 - $20,000 = $3,761`}
               ? "This calculation assumes fixed-rate amortization with equal monthly payments. Actual payments may vary slightly due to rounding."
               : undefined
           }
+          calculatorType="finance"
+          calculatorName="Loan Calculator"
+          inputs={inputs}
         />
       </div>
     </CalculatorLayout>
