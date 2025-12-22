@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalculatorLayout, CalculatorResult, ProGate } from "@/components/calculator";
+import { CalculatorLayout, CalculatorResult } from "@/components/calculator";
 import { formatCurrency, formatNumber, parseInput, isValidPositive } from "@/lib/calculators";
 
 const PayrollCalculator = () => {
@@ -125,11 +125,13 @@ const PayrollCalculator = () => {
     setResults([]);
   };
 
+  const inputs = { grossSalary, payFrequency, filingStatus, allowances, preTaxDeductions, state };
+
   return (
     <CalculatorLayout
       title="Payroll Calculator"
       description="Calculate net pay after taxes and deductions. Free payroll calculator with federal tax, FICA, and state tax estimates."
-      intro="Calculate your take-home pay after all taxes and deductions. This Pro calculator estimates federal tax, Social Security, Medicare, and state taxes."
+      intro="Calculate your take-home pay after all taxes and deductions. This calculator estimates federal tax, Social Security, Medicare, and state taxes."
       category="Finance"
       categorySlug="finance"
       formula="Net Pay = Gross Pay - Federal Tax - FICA - State Tax - Deductions"
@@ -171,115 +173,116 @@ Net pay = $3,000 - $450 - $186 - $43.50 - $150 = $2,170.50`}
       ]}
       canonicalUrl="/calculators/finance/payroll-calculator"
     >
-      <ProGate calculatorName="Payroll Calculator">
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="grossSalary">Gross Pay (per period)</Label>
-              <Input
-                id="grossSalary"
-                type="number"
-                placeholder="e.g., 3000"
-                value={grossSalary}
-                onChange={(e) => setGrossSalary(e.target.value)}
-                min="0"
-                step="100"
-              />
-            </div>
-            <div>
-              <Label htmlFor="payFrequency">Pay Frequency</Label>
-              <Select value={payFrequency} onValueChange={setPayFrequency}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="biweekly">Bi-weekly</SelectItem>
-                  <SelectItem value="semimonthly">Semi-monthly</SelectItem>
-                  <SelectItem value="monthly">Monthly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="grossSalary">Gross Pay (per period)</Label>
+            <Input
+              id="grossSalary"
+              type="number"
+              placeholder="e.g., 3000"
+              value={grossSalary}
+              onChange={(e) => setGrossSalary(e.target.value)}
+              min="0"
+              step="100"
+            />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="filingStatus">Filing Status</Label>
-              <Select value={filingStatus} onValueChange={setFilingStatus}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="single">Single</SelectItem>
-                  <SelectItem value="married">Married Filing Jointly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="allowances">Allowances (W-4)</Label>
-              <Select value={allowances} onValueChange={setAllowances}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {[0, 1, 2, 3, 4, 5].map((n) => (
-                    <SelectItem key={n} value={n.toString()}>
-                      {n}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="payFrequency">Pay Frequency</Label>
+            <Select value={payFrequency} onValueChange={setPayFrequency}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="weekly">Weekly</SelectItem>
+                <SelectItem value="biweekly">Bi-weekly</SelectItem>
+                <SelectItem value="semimonthly">Semi-monthly</SelectItem>
+                <SelectItem value="monthly">Monthly</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="preTaxDeductions">Pre-tax Deductions (per period)</Label>
-              <Input
-                id="preTaxDeductions"
-                type="number"
-                placeholder="e.g., 200"
-                value={preTaxDeductions}
-                onChange={(e) => setPreTaxDeductions(e.target.value)}
-                min="0"
-                step="10"
-              />
-            </div>
-            <div>
-              <Label htmlFor="state">State Tax Level</Label>
-              <Select value={state} onValueChange={setState}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No State Tax</SelectItem>
-                  <SelectItem value="low">Low (~3%)</SelectItem>
-                  <SelectItem value="medium">Medium (~5%)</SelectItem>
-                  <SelectItem value="high">High (~8%)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <Button onClick={calculate} className="flex-1">
-              Calculate Payroll
-            </Button>
-            <Button onClick={reset} variant="outline">
-              Reset
-            </Button>
-          </div>
-
-          <CalculatorResult
-            results={results}
-            explanation={
-              results.length > 0
-                ? "These are estimates based on 2024 federal tax brackets. Consult a tax professional for precise calculations."
-                : undefined
-            }
-          />
         </div>
-      </ProGate>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="filingStatus">Filing Status</Label>
+            <Select value={filingStatus} onValueChange={setFilingStatus}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="single">Single</SelectItem>
+                <SelectItem value="married">Married Filing Jointly</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="allowances">Allowances (W-4)</Label>
+            <Select value={allowances} onValueChange={setAllowances}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[0, 1, 2, 3, 4, 5].map((n) => (
+                  <SelectItem key={n} value={n.toString()}>
+                    {n}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="preTaxDeductions">Pre-tax Deductions (per period)</Label>
+            <Input
+              id="preTaxDeductions"
+              type="number"
+              placeholder="e.g., 200"
+              value={preTaxDeductions}
+              onChange={(e) => setPreTaxDeductions(e.target.value)}
+              min="0"
+              step="10"
+            />
+          </div>
+          <div>
+            <Label htmlFor="state">State Tax Level</Label>
+            <Select value={state} onValueChange={setState}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No State Tax</SelectItem>
+                <SelectItem value="low">Low (~3%)</SelectItem>
+                <SelectItem value="medium">Medium (~5%)</SelectItem>
+                <SelectItem value="high">High (~8%)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <Button onClick={calculate} className="flex-1">
+            Calculate Payroll
+          </Button>
+          <Button onClick={reset} variant="outline">
+            Reset
+          </Button>
+        </div>
+
+        <CalculatorResult
+          results={results}
+          explanation={
+            results.length > 0
+              ? "These are estimates based on 2024 federal tax brackets. Consult a tax professional for precise calculations."
+              : undefined
+          }
+          calculatorType="finance"
+          calculatorName="Payroll Calculator"
+          inputs={inputs}
+        />
+      </div>
     </CalculatorLayout>
   );
 };
