@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bookmark, Share2, FileDown } from "lucide-react";
+import { Bookmark, Share2, FileDown, FileText, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -7,10 +7,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import ProUpgradeModal from "@/components/dashboard/ProUpgradeModal";
 import { useSavedCalculations, useSharedCalculations } from "@/hooks/useCalculationHistory";
 import { useToast } from "@/hooks/use-toast";
+import { exportToPDF, exportToExcel } from "@/lib/exportUtils";
 
 interface ProActionsBarProps {
   calculatorType: string;
@@ -36,6 +43,7 @@ const ProActionsBar = ({
   const [modalFeature, setModalFeature] = useState<"save" | "share" | "export">("save");
   const [isSaving, setIsSaving] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const handleSave = async () => {
     if (!isPro) {
@@ -119,7 +127,7 @@ const ProActionsBar = ({
     }
   };
 
-  const handleExport = () => {
+  const handleExport = (format: "pdf" | "excel") => {
     if (!isPro) {
       setModalFeature("export");
       setModalOpen(true);
@@ -135,11 +143,37 @@ const ProActionsBar = ({
       return;
     }
 
-    // TODO: Implement PDF/Excel export
-    toast({
-      title: "Export coming soon",
-      description: "PDF and Excel export will be available soon.",
-    });
+    setIsExporting(true);
+    try {
+      const exportData = {
+        calculatorName,
+        calculatorType,
+        inputs,
+        result,
+      };
+
+      if (format === "pdf") {
+        exportToPDF(exportData);
+        toast({
+          title: "PDF exported",
+          description: "Your calculation report has been downloaded.",
+        });
+      } else {
+        exportToExcel(exportData);
+        toast({
+          title: "Excel exported",
+          description: "Your calculation spreadsheet has been downloaded.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Export failed",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   if (!user) {
@@ -200,29 +234,54 @@ const ProActionsBar = ({
             )}
           </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExport}
-                className="gap-2"
-              >
-                <FileDown className="h-4 w-4" />
-                Export
-                {!isPro && (
+          {isPro ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={isExporting}
+                  className="gap-2"
+                >
+                  <FileDown className="h-4 w-4" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleExport("pdf")} className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  Export as PDF
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport("excel")} className="gap-2">
+                  <FileSpreadsheet className="h-4 w-4" />
+                  Export as Excel
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setModalFeature("export");
+                    setModalOpen(true);
+                  }}
+                  className="gap-2"
+                >
+                  <FileDown className="h-4 w-4" />
+                  Export
                   <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
                     Pro
                   </span>
-                )}
-              </Button>
-            </TooltipTrigger>
-            {!isPro && (
+                </Button>
+              </TooltipTrigger>
               <TooltipContent>
                 <p>Export to PDF/Excel with Pro</p>
               </TooltipContent>
-            )}
-          </Tooltip>
+            </Tooltip>
+          )}
         </TooltipProvider>
       </div>
 
