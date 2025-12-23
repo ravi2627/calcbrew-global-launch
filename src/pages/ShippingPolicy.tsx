@@ -17,75 +17,34 @@ const ShippingPolicy = () => {
         <div className="container">
           <div className="max-w-3xl mx-auto">
             <h1 className="text-4xl font-bold text-foreground mb-4">
-              Shipping Policy
+              Shipping & Delivery Policy
             </h1>
             <p className="text-muted-foreground mb-8">
-              Last updated: {new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Last updated on Dec 23 2025
             </p>
 
-            <div className="prose prose-neutral dark:prose-invert max-w-none space-y-8">
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground mb-4">
-                  No Physical Shipping
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  CalcBrew is a 100% digital product. We do not sell, ship, or deliver any physical goods. There are no shipping charges, delivery times, or physical addresses required for our services.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground mb-4">
-                  Digital SaaS Product
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  CalcBrew is a Software-as-a-Service (SaaS) platform that provides online calculator tools and premium features. All our services are delivered digitally through our web platform accessible at calcbrew.com.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground mb-4">
-                  Instant Digital Access
-                </h2>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  Upon successful payment for any CalcBrew subscription or service:
-                </p>
-                <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                  <li>Access to premium features is granted immediately</li>
-                  <li>No waiting period or shipping time required</li>
-                  <li>You can start using all features right away</li>
-                  <li>A confirmation email will be sent to your registered email address</li>
-                </ul>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground mb-4">
-                  How to Access Your Subscription
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  After completing your purchase, simply log in to your CalcBrew account to access all premium features. Your subscription status and features will be automatically updated in your dashboard.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground mb-4">
-                  Service Availability
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Our digital services are available 24/7 from anywhere in the world with an internet connection. There are no geographical restrictions on accessing CalcBrew.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground mb-4">
-                  Contact Us
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  If you have any questions about accessing our digital services, please contact us at:
-                </p>
-                <p className="text-foreground font-medium mt-2">
-                  Email: support@calcbrew.com
-                </p>
-              </div>
+            <div className="prose prose-neutral dark:prose-invert max-w-none">
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                For International buyers, orders are shipped and delivered through registered international courier companies and/or International speed post only. For domestic buyers, orders are shipped through registered domestic courier companies and/or speed post only.
+              </p>
+              
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Orders are shipped within Not Applicable or as per the delivery date agreed at the time of order confirmation and delivering of the shipment subject to Courier Company / post office norms.
+              </p>
+              
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                RAVI KUMAR SHARMA is not liable for any delay in delivery by the courier company / postal authorities and only guarantees to hand over the consignment to the courier company or postal authorities within Not Applicable from the date of the order and payment or as per the delivery date agreed at the time of order confirmation.
+              </p>
+              
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Delivery of all orders will be to the address provided by the buyer. Delivery of our services will be confirmed on your mail ID as specified during registration.
+              </p>
+              
+              <p className="text-muted-foreground leading-relaxed">
+                For any issues in utilizing our services you may contact our helpdesk on{" "}
+                <a href="tel:8168262790" className="text-primary hover:underline">8168262790</a> or{" "}
+                <a href="mailto:support@calcbrew.com" className="text-primary hover:underline">support@calcbrew.com</a>
+              </p>
             </div>
           </div>
         </div>
