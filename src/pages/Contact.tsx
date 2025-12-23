@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, MessageSquare, HelpCircle } from "lucide-react";
+import { Mail, Building2, MapPin, Clock } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,12 +16,11 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     toast({
       title: "Message Sent!",
-      description: "We'll get back to you as soon as possible.",
+      description: "We'll get back to you within 24-48 hours.",
     });
 
     setIsSubmitting(false);
@@ -31,10 +30,10 @@ const Contact = () => {
   return (
     <Layout>
       <Helmet>
-        <title>Contact CalcBrew - Get in Touch</title>
+        <title>Contact CalcBrew - Get in Touch | Support</title>
         <meta
           name="description"
-          content="Have questions or feedback about CalcBrew? Contact our team for support, calculator requests, or partnership inquiries."
+          content="Contact CalcBrew for support, feedback, or inquiries. Email us at support@calcbrew.com. Based in India with 24-48 hour response time."
         />
         <link rel="canonical" href="https://calcbrew.com/contact" />
       </Helmet>
@@ -47,31 +46,39 @@ const Contact = () => {
                 Contact Us
               </h1>
               <p className="text-lg text-muted-foreground">
-                Have a question, feedback, or calculator request? We'd love to hear from you.
+                Have a question or need support? We're here to help.
               </p>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-3 mb-12">
+            {/* Business Information */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
               <div className="text-center p-6 rounded-xl border border-border bg-card">
                 <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-lg bg-primary/10 mb-4">
                   <Mail className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-1">Email Us</h3>
+                <h3 className="font-semibold text-foreground mb-1">Email</h3>
                 <p className="text-sm text-muted-foreground">support@calcbrew.com</p>
               </div>
               <div className="text-center p-6 rounded-xl border border-border bg-card">
                 <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-lg bg-primary/10 mb-4">
-                  <MessageSquare className="h-6 w-6 text-primary" />
+                  <Building2 className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-1">Feedback</h3>
-                <p className="text-sm text-muted-foreground">Share your suggestions</p>
+                <h3 className="font-semibold text-foreground mb-1">Business</h3>
+                <p className="text-sm text-muted-foreground">CalcBrew</p>
               </div>
               <div className="text-center p-6 rounded-xl border border-border bg-card">
                 <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-lg bg-primary/10 mb-4">
-                  <HelpCircle className="h-6 w-6 text-primary" />
+                  <MapPin className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-1">Support</h3>
-                <p className="text-sm text-muted-foreground">Get help with our tools</p>
+                <h3 className="font-semibold text-foreground mb-1">Country</h3>
+                <p className="text-sm text-muted-foreground">India</p>
+              </div>
+              <div className="text-center p-6 rounded-xl border border-border bg-card">
+                <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-lg bg-primary/10 mb-4">
+                  <Clock className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-1">Response Time</h3>
+                <p className="text-sm text-muted-foreground">24-48 hours</p>
               </div>
             </div>
 
