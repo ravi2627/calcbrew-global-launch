@@ -10,8 +10,12 @@ import {
   Check,
   Sparkles,
   Shield,
+  Calendar,
+  Clock,
+  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
+import { format, formatDistanceToNow, isPast, differenceInDays } from "date-fns";
 
 const DashboardBilling = () => {
   const { user, isPro, subscription, refreshProfile } = useAuth();
@@ -51,6 +55,28 @@ const DashboardBilling = () => {
     toast.success(`Switched to ${newPlan === 'pro' ? 'Pro' : 'Free'} plan`);
   };
 
+  // Calculate subscription status
+  const getSubscriptionStatus = () => {
+    if (!subscription) return null;
+    
+    const endDate = subscription.end_date ? new Date(subscription.end_date) : null;
+    const startDate = new Date(subscription.start_date);
+    const isExpired = endDate ? isPast(endDate) : false;
+    const daysRemaining = endDate ? differenceInDays(endDate, new Date()) : null;
+    
+    return {
+      status: subscription.status,
+      plan: subscription.plan,
+      startDate,
+      endDate,
+      isExpired,
+      daysRemaining,
+      isExpiringSoon: daysRemaining !== null && daysRemaining <= 7 && daysRemaining > 0,
+    };
+  };
+
+  const subStatus = getSubscriptionStatus();
+
   return (
     <div className="space-y-6">
       <div>
@@ -59,6 +85,112 @@ const DashboardBilling = () => {
           Manage your subscription and billing information
         </p>
       </div>
+
+      {/* Subscription Status Card */}
+      {isPro && subStatus && (
+        <Card className="border-primary/50 bg-gradient-to-br from-primary/5 to-transparent">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-primary" />
+              Subscription Status
+            </CardTitle>
+            <CardDescription>
+              Your current subscription details
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6 md:grid-cols-3">
+              {/* Status */}
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Status</p>
+                <div className="flex items-center gap-2">
+                  {subStatus.status === 'active' && !subStatus.isExpired ? (
+                    <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                      <Check className="h-3 w-3 mr-1" />
+                      Active
+                    </Badge>
+                  ) : (
+                    <Badge variant="destructive">
+                      <AlertCircle className="h-3 w-3 mr-1" />
+                      Expired
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Start Date */}
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Started On</p>
+                <p className="font-medium">
+                  {format(subStatus.startDate, "MMM dd, yyyy")}
+                </p>
+              </div>
+
+              {/* Expiry Date */}
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  {subStatus.isExpired ? "Expired On" : "Expires On"}
+                </p>
+                {subStatus.endDate ? (
+                  <div>
+                    <p className="font-medium">
+                      {format(subStatus.endDate, "MMM dd, yyyy")}
+                    </p>
+                    {!subStatus.isExpired && (
+                      <p className={`text-sm ${subStatus.isExpiringSoon ? 'text-amber-600' : 'text-muted-foreground'}`}>
+                        <Clock className="h-3 w-3 inline mr-1" />
+                        {formatDistanceToNow(subStatus.endDate, { addSuffix: true })}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="font-medium text-muted-foreground">No expiry set</p>
+                )}
+              </div>
+            </div>
+
+            {/* Expiring Soon Warning */}
+            {subStatus.isExpiringSoon && (
+              <div className="mt-4 rounded-lg bg-amber-500/10 border border-amber-500/20 p-4 flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-amber-600">
+                    Your subscription expires in {subStatus.daysRemaining} day{subStatus.daysRemaining !== 1 ? 's' : ''}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Renew now to continue enjoying Pro features without interruption.
+                  </p>
+                  <Link to="/pricing">
+                    <Button size="sm" className="mt-3">
+                      Renew Subscription
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {/* Expired Warning */}
+            {subStatus.isExpired && (
+              <div className="mt-4 rounded-lg bg-destructive/10 border border-destructive/20 p-4 flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-destructive">
+                    Your subscription has expired
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Renew your subscription to regain access to Pro features.
+                  </p>
+                  <Link to="/pricing">
+                    <Button size="sm" className="mt-3">
+                      Renew Now
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Current Plan */}
       <Card>
@@ -122,7 +254,7 @@ const DashboardBilling = () => {
             <CardTitle>Free</CardTitle>
             <CardDescription>For casual users</CardDescription>
             <div className="text-3xl font-bold">
-              $0<span className="text-lg font-normal text-muted-foreground">/month</span>
+              ₹0<span className="text-lg font-normal text-muted-foreground">/month</span>
             </div>
           </CardHeader>
           <CardContent>
@@ -157,7 +289,7 @@ const DashboardBilling = () => {
             </CardTitle>
             <CardDescription>For power users</CardDescription>
             <div className="text-3xl font-bold">
-              $9<span className="text-lg font-normal text-muted-foreground">/month</span>
+              ₹199<span className="text-lg font-normal text-muted-foreground">/month</span>
             </div>
           </CardHeader>
           <CardContent>
@@ -197,7 +329,8 @@ const DashboardBilling = () => {
           <CardContent>
             <div className="rounded-lg border p-4">
               <p className="text-muted-foreground">
-                Payment integration coming soon. Your Pro status is currently for demonstration purposes.
+                Payments are processed securely through Razorpay. To update your payment method, 
+                renew your subscription from the pricing page.
               </p>
             </div>
           </CardContent>
@@ -211,7 +344,7 @@ const DashboardBilling = () => {
           <div>
             <h3 className="font-semibold">Secure Payments</h3>
             <p className="text-sm text-muted-foreground">
-              When payment integration is enabled, all transactions will be processed securely through Stripe.
+              All transactions are processed securely through Razorpay, a PCI-DSS compliant payment gateway.
               Your payment information is never stored on our servers.
             </p>
           </div>
